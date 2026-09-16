@@ -1,7 +1,7 @@
 import React from 'react';
 import { ConversationSummary } from '../types/index.js';
 import { useLookerHost } from '../looker/StandaloneProvider.js';
-import { Plus, MessageSquare, Trash2, ChevronLeft, UserCheck, Shield } from 'lucide-react';
+import { MessageSquare, Trash2, ChevronLeft, UserCheck, Shield } from 'lucide-react';
 import styles from './ConversationSidebar.module.css';
 
 interface ConversationSidebarProps {
@@ -10,7 +10,7 @@ interface ConversationSidebarProps {
   conversations: ConversationSummary[];
   activeId: string | null;
   onSelect: (id: string) => void;
-  onNewChat: () => void;
+  onNewChat?: () => void;
   onDelete: (id: string) => void;
   isLoading: boolean;
 }
@@ -63,13 +63,15 @@ export const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
 
   return (
     <aside className={`${styles.sidebarContainer} sidebar-container`}>
-      {/* Sidebar Header: New Chat Button */}
+      {/* Sidebar Header: Title and Collapse Button */}
       <div className={`${styles.sidebarHeader} sidebar-header`}>
-        <button className={`btn ${styles.btnNewChat} btn-new-chat`} onClick={onNewChat} title="Start new conversation">
-          <Plus size={16} />
-          <span>New Chat</span>
-        </button>
-        <button className={`btn btn-ghost ${styles.btnIcon}`} onClick={onToggle} title="Collapse sidebar">
+        <span className={styles.sidebarTitle}>Chats</span>
+        <button
+          className={`btn btn-ghost ${styles.btnIcon}`}
+          onClick={onToggle}
+          title="Collapse sidebar"
+          aria-label="Collapse sidebar"
+        >
           <ChevronLeft size={16} />
         </button>
       </div>

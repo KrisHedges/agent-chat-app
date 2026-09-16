@@ -5,7 +5,7 @@ import { MessageList } from './MessageList.js';
 import { InputBar } from './InputBar.js';
 import { SettingsDrawer } from './SettingsDrawer.js';
 import { ConversationSidebar } from './ConversationSidebar.js';
-import { Bot, Sliders, ShieldCheck, Box, Menu, Plus, RotateCcw } from 'lucide-react';
+import { Sliders, Menu, Plus, RotateCcw } from 'lucide-react';
 import { AttachmentCategory } from '../types/index.js';
 import styles from './ChatInterface.module.css';
 
@@ -128,33 +128,17 @@ export const ChatInterface: React.FC = () => {
           {/* Chat Content Window Toolbar */}
           <div className={styles.chatToolbar} data-testid="chat-toolbar">
             <div className={styles.toolbarLeft}>
-              <button
-                type="button"
-                className={`${styles.hamburgerBtn} btn`}
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                title={isSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-                aria-label={isSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-              >
-                <Menu size={18} />
-              </button>
-
-              <div className={styles.toolbarTitleGroup}>
-                <Bot size={18} style={{ color: 'var(--accent-blue)' }} />
-                <span className={styles.toolbarTitle}>Gemini Agent Assistant</span>
-                <span>
-                  {lookerHost.isLooker ? (
-                    <span style={{ color: 'var(--accent-green)' }} className={styles.toolbarBadge}>
-                      <ShieldCheck size={11} style={{ display: 'inline', marginRight: '3px' }} />
-                      Looker Extension Mode ({lookerHost.user.name})
-                    </span>
-                  ) : (
-                    <span style={{ color: 'var(--accent-amber)' }} className={styles.toolbarBadge}>
-                      <Box size={11} style={{ display: 'inline', marginRight: '3px' }} />
-                      Standalone Dev ({lookerHost.user.name})
-                    </span>
-                  )}
-                </span>
-              </div>
+              {!isSidebarOpen && (
+                <button
+                  type="button"
+                  className={`${styles.hamburgerBtn} btn`}
+                  onClick={() => setIsSidebarOpen(true)}
+                  title="Expand sidebar"
+                  aria-label="Expand sidebar"
+                >
+                  <Menu size={18} />
+                </button>
+              )}
             </div>
 
             <div className={styles.toolbarRight}>

@@ -36,28 +36,37 @@ describe('ChatInterface Component', () => {
     });
   });
 
-  it('renders Standalone Dev header and handles sidebar toggling', async () => {
+  it('renders chat toolbar and handles sidebar toggling with a single toggle button', async () => {
     render(
       <StandaloneProvider>
         <ChatInterface />
       </StandaloneProvider>
     );
 
-    expect(await screen.findByText('Gemini Agent Assistant')).toBeDefined();
-    expect(await screen.findByText(/Standalone Dev/i)).toBeDefined();
+    expect(await screen.findByTestId('chat-toolbar')).toBeDefined();
+    expect(await screen.findByText('Dev Substitute User:')).toBeDefined();
 
     // Sidebar should be open initially
     expect(await screen.findByText('No saved conversations yet.')).toBeDefined();
 
-    // Toggle sidebar closed
-    const toggleBtns = screen.getAllByTitle('Collapse sidebar');
-    fireEvent.click(toggleBtns[0]);
-    expect(screen.queryByText('No saved conversations yet.')).toBeNull();
+    // Hamburger button should NOT be rendered when sidebar is open
+    expect(screen.queryByTitle('Expand sidebar')).toBeNull();
 
-    // Toggle sidebar open again
+    // Exactly one collapse button in the sidebar header
+    const collapseBtn = screen.getByTitle('Collapse sidebar');
+    fireEvent.click(collapseBtn);
+
+    // Sidebar is closed
+    expect(screen.queryByText('No saved conversations yet.')).toBeNull();
+    expect(screen.queryByTitle('Collapse sidebar')).toBeNull();
+
+    // Hamburger button is now visible in toolbar
     const expandBtn = screen.getByTitle('Expand sidebar');
     fireEvent.click(expandBtn);
+
+    // Sidebar is open again
     expect(await screen.findByText('No saved conversations yet.')).toBeDefined();
+    expect(screen.queryByTitle('Expand sidebar')).toBeNull();
   });
 
   it('opens and closes Settings drawer', async () => {
@@ -67,7 +76,7 @@ describe('ChatInterface Component', () => {
       </StandaloneProvider>
     );
 
-    expect(await screen.findByText('Gemini Agent Assistant')).toBeDefined();
+    expect(await screen.findByTestId('chat-toolbar')).toBeDefined();
     expect(screen.queryByText('Agent Configuration')).toBeNull();
 
     const settingsBtn = screen.getByTitle('Configure agent model and skills');
@@ -88,7 +97,7 @@ describe('ChatInterface Component', () => {
       </StandaloneProvider>
     );
 
-    expect(await screen.findByText('Gemini Agent Assistant')).toBeDefined();
+    expect(await screen.findByTestId('chat-toolbar')).toBeDefined();
 
     const appContainer = screen.getByTestId('chat-container');
 
@@ -142,7 +151,7 @@ describe('ChatInterface Component', () => {
     }
   });
 
-  it('renders Looker Extension Mode header when isLooker is true', async () => {
+  it('renders Looker session in sidebar footer when isLooker is true', async () => {
     const mockContext = {
       isLooker: true,
       hostUrl: 'http://looker.internal',
@@ -159,7 +168,7 @@ describe('ChatInterface Component', () => {
       </LookerHostContext.Provider>
     );
 
-    expect(await screen.findByText(/Looker Extension Mode/i)).toBeDefined();
+    expect(await screen.findByText(/Looker Authenticated Session/i)).toBeDefined();
     expect((await screen.findAllByText(/Alice Henderson/i)).length).toBeGreaterThanOrEqual(1);
   });
 
@@ -170,7 +179,7 @@ describe('ChatInterface Component', () => {
       </StandaloneProvider>
     );
 
-    expect(await screen.findByText('Gemini Agent Assistant')).toBeDefined();
+    expect(await screen.findByTestId('chat-toolbar')).toBeDefined();
 
     // Click starter prompt and wait for streamed response
     const skillsPrompt = screen.getByText('Skills & Tools');
@@ -190,9 +199,9 @@ describe('ChatInterface Component', () => {
     fireEvent.click(sendBtn);
     expect(await screen.findByText('Analyze Looker data')).toBeDefined();
 
-    // Click New Chat button
-    const newChatBtns = screen.getAllByRole('button', { name: /New Chat/i });
-    fireEvent.click(newChatBtns[0]);
+    // Click New Chat button in chat toolbar
+    const newChatBtn = screen.getByRole('button', { name: /New Chat/i });
+    fireEvent.click(newChatBtn);
     expect(await screen.findByText('Gemini AI Agent Framework')).toBeDefined();
 
     // Send message again and test Clear button
@@ -212,10 +221,10 @@ describe('ChatInterface Component', () => {
       </StandaloneProvider>
     );
 
-    expect(await screen.findByText('Gemini Agent Assistant')).toBeDefined();
+    expect(await screen.findByTestId('chat-toolbar')).toBeDefined();
 
-    // Toggle sidebar closed using the button inside the sidebar (line 168)
-    const sidebarCollapseBtn = screen.getAllByTitle('Collapse sidebar')[1];
+    // Toggle sidebar closed using the single collapse button in the sidebar
+    const sidebarCollapseBtn = screen.getByTitle('Collapse sidebar');
     fireEvent.click(sidebarCollapseBtn);
     expect(screen.queryByText('No saved conversations yet.')).toBeNull();
 

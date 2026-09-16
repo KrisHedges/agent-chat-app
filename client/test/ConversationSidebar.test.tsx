@@ -119,11 +119,8 @@ describe('ConversationSidebar Component', () => {
     fireEvent.click(yestItem);
     expect(handleSelect).toHaveBeenCalledWith('c_yest');
 
-    // Click new chat
-    fireEvent.click(screen.getByRole('button', { name: /New Chat/i }));
-    expect(handleNewChat).toHaveBeenCalled();
-
-    // Click collapse
+    // Header title and collapse
+    expect(screen.getByText('Chats')).toBeDefined();
     fireEvent.click(screen.getByTitle('Collapse sidebar'));
     expect(handleToggle).toHaveBeenCalled();
 

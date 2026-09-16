@@ -12,12 +12,21 @@
 }
 
 .sidebarHeader {
-  padding: 12px 14px;
+  height: 52px;
+  min-height: 52px;
+  padding: 0 14px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  border-bottom: 1px solid var(--border-subtle);
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-color);
   background-color: var(--bg-secondary);
+}
+
+.sidebarTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.2px;
 }
 
 .btnNewChat {
