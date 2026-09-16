@@ -5,6 +5,7 @@ import { Message } from '../types/index.js';
 import { AttachmentChip } from './AttachmentChip.js';
 import { ToolExecutionCard } from './ToolExecutionCard.js';
 import { Bot, User, AlertTriangle, RotateCcw } from 'lucide-react';
+import styles from './MessageItem.module.css';
 
 interface MessageItemProps {
   message: Message;
@@ -46,12 +47,20 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message, onRetry, isLo
   }
 
   return (
-    <div className={`message-row ${isUser ? 'user' : 'agent'}`}>
-      <div className={`message-avatar ${isUser ? 'user' : 'agent'}`}>
+    <div
+      className={`${styles.messageRow} ${
+        isUser ? `${styles.messageRowUser} user` : 'agent'
+      } message-row`}
+    >
+      <div
+        className={`${styles.messageAvatar} ${
+          isUser ? `${styles.messageAvatarUser} user` : `${styles.messageAvatarAgent} agent`
+        } message-avatar`}
+      >
         {isUser ? <User size={16} /> : <Bot size={16} />}
       </div>
 
-      <div className="message-content-wrapper">
+      <div className={`${styles.messageContentWrapper} message-content-wrapper`}>
         {/* Render Attachments if present on this message */}
         {message.attachments && message.attachments.length > 0 && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '4px' }}>
@@ -63,7 +72,11 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message, onRetry, isLo
 
         {/* Message Content with Markdown (if partial content was streamed before error or normal message) */}
         {(displayContent || (!message.toolCalls?.length && !isUser && !isError)) && (
-          <div className="message-bubble">
+          <div
+            className={`${styles.messageBubble} ${
+              isUser ? styles.messageBubbleUser : styles.messageBubbleAgent
+            } message-bubble`}
+          >
             {displayContent ? (
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{displayContent}</ReactMarkdown>
             ) : (
@@ -74,19 +87,19 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message, onRetry, isLo
 
         {/* Error Card with Try Again button */}
         {isError && (
-          <div className="message-error-card">
-            <div className="message-error-header">
-              <AlertTriangle size={15} className="message-error-icon" />
+          <div className={`${styles.messageErrorCard} message-error-card`}>
+            <div className={`${styles.messageErrorHeader} message-error-header`}>
+              <AlertTriangle size={15} className={`${styles.messageErrorIcon} message-error-icon`} />
               <span>Generation Error</span>
             </div>
-            <div className="message-error-body">
+            <div className={`${styles.messageErrorBody} message-error-body`}>
               {errorText || 'Gemini encountered a temporary service error.'}
             </div>
             {onRetry && (
-              <div className="message-error-actions">
+              <div className={`${styles.messageErrorActions} message-error-actions`}>
                 <button
                   type="button"
-                  className="btn-retry"
+                  className={`${styles.btnRetry} btn-retry`}
                   onClick={() => onRetry(message.id)}
                   disabled={isLoading}
                   title="Retry this prompt with Gemini"

@@ -1,0 +1,50 @@
+.toolCard {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-top: 8px;
+  font-size: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.toolCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  cursor: pointer;
+  background: var(--bg-secondary);
+  user-select: none;
+  transition: background 0.15s;
+}
+
+.toolCardHeader:hover {
+  background: var(--bg-hover);
+}
+
+.toolBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  color: var(--hmh-dark-blue);
+  font-weight: 600;
+}
+
+.toolStatusPill {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: var(--accent-green-subtle);
+  color: var(--accent-green);
+  font-weight: 600;
+}
+
+.toolCardBody {
+  padding: 10px 12px;
+  border-top: 1px solid var(--border-color);
+  background: #F8F9FA;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}

@@ -7,6 +7,7 @@ import { SettingsDrawer } from './SettingsDrawer.js';
 import { ConversationSidebar } from './ConversationSidebar.js';
 import { Bot, Sliders, ShieldCheck, Box, PanelLeftClose, PanelLeft, Plus } from 'lucide-react';
 import { AttachmentCategory } from '../types/index.js';
+import styles from './ChatInterface.module.css';
 
 export const ChatInterface: React.FC = () => {
   const lookerHost = useLookerHost();
@@ -102,7 +103,7 @@ export const ChatInterface: React.FC = () => {
 
   return (
     <div
-      className="app-container"
+      className={`${styles.appContainer} app-container`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -112,21 +113,22 @@ export const ChatInterface: React.FC = () => {
       }}
     >
       {/* Top Header */}
-      <header className="app-header">
-        <div className="header-brand">
+      <header className={`${styles.appHeader} app-header`}>
+        <div className={styles.headerBrand}>
           <button
-            className="btn btn-ghost btn-icon"
+            className={`btn btn-ghost ${styles.headerGhostBtn}`}
+            style={{ padding: '7px' }}
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             title={isSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
           >
             {isSidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeft size={18} />}
           </button>
 
-          <div className="header-logo">
+          <div className={styles.headerLogo}>
             <Bot size={20} />
           </div>
 
-          <div className="header-title-group">
+          <div className={styles.headerTitleGroup}>
             <h1>Gemini Agent Assistant</h1>
             <span>
               {lookerHost.isLooker ? (
@@ -144,14 +146,14 @@ export const ChatInterface: React.FC = () => {
           </div>
         </div>
 
-        <div className="header-actions">
-          <button className="btn btn-ghost" onClick={startNewChat} title="Start new chat">
+        <div className={styles.headerActions}>
+          <button className={`btn btn-ghost ${styles.headerGhostBtn}`} onClick={startNewChat} title="Start new chat">
             <Plus size={14} />
             <span>New Chat</span>
           </button>
 
           <button
-            className="btn btn-ghost"
+            className={`btn btn-ghost ${styles.headerGhostBtn}`}
             onClick={() => setIsSettingsOpen(true)}
             title="Configure agent model and skills"
           >
@@ -162,7 +164,7 @@ export const ChatInterface: React.FC = () => {
       </header>
 
       {/* Main Body with Sidebar + Chat Layout */}
-      <div className="app-body-layout">
+      <div className={`${styles.appBodyLayout} app-body-layout`}>
         <ConversationSidebar
           isOpen={isSidebarOpen}
           onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -174,7 +176,7 @@ export const ChatInterface: React.FC = () => {
           isLoading={isLoadingHistory}
         />
 
-        <main className="chat-layout">
+        <main className={`${styles.chatLayout} chat-layout`}>
           <MessageList
             messages={messages}
             onPromptClick={(prompt) => sendMessage(prompt)}

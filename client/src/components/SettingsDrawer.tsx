@@ -1,6 +1,7 @@
 import React from 'react';
 import { AgentSettings } from '../types/index.js';
 import { X, Sliders, Cpu, Wrench } from 'lucide-react';
+import styles from './SettingsDrawer.module.css';
 
 interface SettingsDrawerProps {
   isOpen: boolean;
@@ -18,9 +19,9 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="drawer-overlay" onClick={onClose}>
-      <div className="drawer-panel" onClick={(e) => e.stopPropagation()}>
-        <div className="drawer-header">
+    <div className={`${styles.drawerOverlay} drawer-overlay`} onClick={onClose}>
+      <div className={`${styles.drawerPanel} drawer-panel`} onClick={(e) => e.stopPropagation()}>
+        <div className={`${styles.drawerHeader} drawer-header`}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Sliders size={18} />
             <h2>Agent Configuration</h2>
@@ -31,13 +32,13 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
         </div>
 
         {/* Model Selection */}
-        <div className="form-group">
+        <div className={`${styles.formGroup} form-group`}>
           <label>
             <Cpu size={14} style={{ display: 'inline', marginRight: '4px' }} />
             Gemini Model
           </label>
           <select
-            className="form-select"
+            className={`${styles.formSelect} form-select`}
             value={
               [
                 'gemini-3.8-flash',
@@ -76,7 +77,7 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
           {/* If custom or user types custom model name */}
           <input
             type="text"
-            className="form-input"
+            className={`${styles.formInput} form-input`}
             style={{ marginTop: '4px' }}
             placeholder="Or type custom model name (e.g. gemini-3.8-flash)"
             value={settings.model}
@@ -88,10 +89,10 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
         </div>
 
         {/* Custom System Prompt */}
-        <div className="form-group">
+        <div className={`${styles.formGroup} form-group`}>
           <label>Custom System Instruction</label>
           <textarea
-            className="form-textarea"
+            className={`${styles.formTextarea} form-textarea`}
             placeholder="Leave empty to use default agent instructions..."
             value={settings.systemPrompt}
             onChange={(e) => onUpdateSettings({ ...settings, systemPrompt: e.target.value })}
@@ -103,7 +104,7 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
         </div>
 
         {/* Active Skills List */}
-        <div className="form-group" style={{ marginTop: 'auto' }}>
+        <div className={`${styles.formGroup} form-group`} style={{ marginTop: 'auto' }}>
           <label>
             <Wrench size={14} style={{ display: 'inline', marginRight: '4px' }} />
             Registered Skills & Tools

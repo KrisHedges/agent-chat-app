@@ -1,6 +1,7 @@
 import React from 'react';
 import { Attachment } from '../types/index.js';
 import { FileText, FileSpreadsheet, FileCode, Image as ImageIcon, X } from 'lucide-react';
+import styles from './AttachmentChip.module.css';
 
 interface AttachmentChipProps {
   attachment: Attachment;
@@ -12,13 +13,13 @@ export const AttachmentChip: React.FC<AttachmentChipProps> = ({ attachment, onRe
   const getIcon = () => {
     switch (attachment.category) {
       case 'image':
-        return <ImageIcon size={14} className="text-blue-400" />;
+        return <ImageIcon size={14} style={{ color: 'var(--accent-blue)' }} />;
       case 'json':
-        return <FileCode size={14} className="text-amber-400" />;
+        return <FileCode size={14} style={{ color: 'var(--accent-amber)' }} />;
       case 'csv':
-        return <FileSpreadsheet size={14} className="text-green-400" />;
+        return <FileSpreadsheet size={14} style={{ color: 'var(--accent-green)' }} />;
       default:
-        return <FileText size={14} className="text-gray-400" />;
+        return <FileText size={14} style={{ color: 'var(--text-secondary)' }} />;
     }
   };
 
@@ -29,19 +30,23 @@ export const AttachmentChip: React.FC<AttachmentChipProps> = ({ attachment, onRe
   };
 
   return (
-    <div className="attachment-chip" title={`${attachment.name} (${formatSize(attachment.size)})`}>
+    <div className={`${styles.attachmentChip} attachment-chip`} title={`${attachment.name} (${formatSize(attachment.size)})`}>
       {attachment.previewUrl ? (
-        <img src={attachment.previewUrl} alt={attachment.name} className="attachment-thumbnail" />
+        <img
+          src={attachment.previewUrl}
+          alt={attachment.name}
+          className={`${styles.attachmentThumbnail} attachment-thumbnail`}
+        />
       ) : (
         getIcon()
       )}
-      <span className="attachment-chip-name">{attachment.name}</span>
+      <span className={`${styles.attachmentChipName} attachment-chip-name`}>{attachment.name}</span>
       <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>({formatSize(attachment.size)})</span>
 
       {!readOnly && onRemove && (
         <button
           type="button"
-          className="attachment-chip-remove"
+          className={`${styles.attachmentChipRemove} attachment-chip-remove`}
           onClick={() => onRemove(attachment.id)}
           aria-label="Remove attachment"
         >

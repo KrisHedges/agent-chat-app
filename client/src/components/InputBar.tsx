@@ -3,6 +3,7 @@ import { Attachment } from '../types/index.js';
 import { AttachmentChip } from './AttachmentChip.js';
 import { FileUploadZone } from './FileUploadZone.js';
 import { Send, Loader2, AlertCircle } from 'lucide-react';
+import styles from './InputBar.module.css';
 
 interface InputBarProps {
   attachments: Attachment[];
@@ -52,7 +53,7 @@ export const InputBar: React.FC<InputBarProps> = ({
   };
 
   return (
-    <div className="input-container">
+    <div className={`${styles.inputContainer} input-container`}>
       {/* Active Attachment Tray */}
       {attachments.length > 0 && (
         <div className="attachment-tray">
@@ -63,12 +64,12 @@ export const InputBar: React.FC<InputBarProps> = ({
       )}
 
       {/* Input Box */}
-      <div className="input-box-wrapper">
+      <div className={`${styles.inputBoxWrapper} input-box-wrapper`}>
         <FileUploadZone onFilesSelected={onAddAttachments} disabled={isLoading} />
 
         <textarea
           ref={textareaRef}
-          className="chat-textarea"
+          className={`${styles.chatTextarea} chat-textarea`}
           placeholder={
             attachments.length > 0
               ? 'Ask about the attached file(s) or add your instructions...'
@@ -94,9 +95,13 @@ export const InputBar: React.FC<InputBarProps> = ({
 
       {/* Real-time Status Indicator */}
       {statusMessage && (
-        <div className={`status-bar ${statusMessage.toLowerCase().includes('error') ? 'error' : ''}`}>
+        <div
+          className={`${styles.statusBar} ${
+            statusMessage.toLowerCase().includes('error') ? `${styles.statusBarError} error` : ''
+          } status-bar`}
+        >
           {statusMessage.toLowerCase().includes('error') ? (
-            <AlertCircle size={12} style={{ color: '#ff7b72' }} />
+            <AlertCircle size={12} style={{ color: 'var(--accent-red, #C81E1E)' }} />
           ) : (
             <Loader2 size={12} className="spinner" />
           )}

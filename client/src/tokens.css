@@ -1,0 +1,84 @@
+:root {
+  /* ==========================================================================
+     HMH Brand Color Palette
+     Extracted directly from HMH brand guidelines:
+     - HMH Dark Blue: #252F6B (Use for large backgrounds)
+     - HMH Darkest Blue: #0F1938 (Use when high contrast is needed)
+     - HMH Lightest Blue: #00B7E3 (Brand secondary)
+     - HMH Green: #5DD146 (Accent)
+     - HMH Blue: #144991 (Interactive support)
+     - HMH Light Blue: #007ABD (Illustrations / support)
+     - Alabaster: #FFFFFF (UI light surface)
+     - Gallery: #EDEDED (UI secondary surface)
+     - Iron: #CACBCC (UI borders)
+     - Manatee: #959699 (UI muted text / subtle)
+     - Trout: #4D4E53 (UI body text)
+     ========================================================================== */
+
+  /* Core Brand Colors */
+  --hmh-dark-blue: #252F6B;
+  --hmh-darkest-blue: #0F1938;
+  --hmh-lightest-blue: #00B7E3;
+  --hmh-green: #5DD146;
+  --hmh-blue: #144991;
+  --hmh-light-blue: #007ABD;
+
+  /* UI Neutral Palette */
+  --hmh-alabaster: #FFFFFF;
+  --hmh-gallery: #EDEDED;
+  --hmh-iron: #CACBCC;
+  --hmh-manatee: #959699;
+  --hmh-trout: #4D4E53;
+
+  /* ==========================================================================
+     Semantic Theme Variables (Accessible Light Theme)
+     ========================================================================== */
+
+  /* Background Surfaces */
+  --bg-primary: var(--hmh-alabaster);           /* #FFFFFF - main canvas, message bubbles, inputs */
+  --bg-secondary: #F8F9FA;                      /* #F8F9FA - subtle surface for sidebar & containers */
+  --bg-tertiary: var(--hmh-gallery);            /* #EDEDED - cards, pills, sidebar footer */
+  --bg-hover: #E6E8EB;                          /* Interactive hover states */
+
+  /* Borders & Dividers */
+  --border-color: var(--hmh-iron);              /* #CACBCC - structural card & container borders */
+  --border-subtle: #E2E4E6;                     /* Hairline dividers */
+
+  /* Typography */
+  --text-primary: var(--hmh-darkest-blue);       /* #0F1938 - high contrast headings & primary text (16.6:1 WCAG AAA) */
+  --text-secondary: var(--hmh-trout);           /* #4D4E53 - readable body copy & labels (8.2:1 WCAG AAA) */
+  --text-muted: #6E7278;                        /* Accessible muted text (5.0:1 WCAG AA) */
+
+  /* Interactive Blue & Highlights */
+  --accent-blue: var(--hmh-blue);               /* #144991 - primary button background & active controls */
+  --accent-blue-hover: var(--hmh-dark-blue);    /* #252F6B - dark blue button hover */
+  --accent-blue-subtle: rgba(0, 183, 227, 0.12);/* Tinted with HMH Lightest Blue */
+
+  /* Accents & Status */
+  --accent-green: #1B7A18;                      /* Accessible high-contrast green for text/badges */
+  --accent-green-bright: var(--hmh-green);      /* #5DD146 - signature HMH green accent */
+  --accent-green-subtle: rgba(93, 209, 70, 0.18);
+
+  --accent-amber: #B7791F;                      /* Amber warning / dev indicator */
+  --accent-amber-subtle: rgba(183, 121, 31, 0.14);
+
+  --accent-purple: var(--hmh-dark-blue);        /* Skills badge color */
+  --accent-purple-subtle: rgba(37, 47, 107, 0.10);
+
+  --accent-red: #C81E1E;                        /* Error notifications & destructive hover */
+  --accent-red-subtle: #FDF2F2;
+  --accent-red-border: #F8B4B4;
+
+  /* Elevations & Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --shadow-sm: 0 1px 2px rgba(15, 25, 56, 0.05);
+  --shadow-md: 0 4px 12px rgba(15, 25, 56, 0.07);
+  --shadow-lg: 0 12px 28px rgba(15, 25, 56, 0.12);
+
+  /* Font Stacks */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}

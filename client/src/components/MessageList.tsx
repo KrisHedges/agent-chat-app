@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Message } from '../types/index.js';
 import { MessageItem } from './MessageItem.js';
 import { Sparkles, FileCode, ImageIcon, Calculator, Box } from 'lucide-react';
+import styles from './MessageList.module.css';
 
 interface MessageListProps {
   messages: Message[];
@@ -24,26 +25,26 @@ export const MessageList: React.FC<MessageListProps> = ({
 
   if (messages.length === 0) {
     return (
-      <div className="empty-chat">
-        <div className="empty-chat-icon">
+      <div className={`${styles.emptyChat} empty-chat`}>
+        <div className={`${styles.emptyChatIcon} empty-chat-icon`}>
           <Sparkles size={28} />
         </div>
-        <h2>Gemini AI Agent Framework</h2>
-        <p>
+        <h2 className={styles.emptyChatTitle}>Gemini AI Agent Framework</h2>
+        <p className={styles.emptyChatDesc}>
           A multi-modal agent with extensible skills, real-time streaming, and Looker extension compatibility.
           Attach JSON files, images, or ask questions below.
         </p>
 
-        <div className="feature-cards">
+        <div className={`${styles.featureCards} feature-cards`}>
           <div
-            className="feature-card"
+            className={`${styles.featureCard} feature-card`}
             onClick={() =>
               onPromptClick(
                 'Can you inspect this sample JSON data: [{"order_id": 101, "revenue": 240.5, "status": "completed"}, {"order_id": 102, "revenue": 180.0, "status": "pending"}]'
               )
             }
           >
-            <div className="feature-card-header">
+            <div className={`${styles.featureCardHeader} feature-card-header`}>
               <FileCode size={15} style={{ color: 'var(--accent-amber)' }} />
               <span>Data Profiling</span>
             </div>
@@ -51,10 +52,10 @@ export const MessageList: React.FC<MessageListProps> = ({
           </div>
 
           <div
-            className="feature-card"
+            className={`${styles.featureCard} feature-card`}
             onClick={() => onPromptClick('What skills and tools do you currently have registered?')}
           >
-            <div className="feature-card-header">
+            <div className={`${styles.featureCardHeader} feature-card-header`}>
               <Box size={15} style={{ color: 'var(--accent-purple)' }} />
               <span>Skills & Tools</span>
             </div>
@@ -62,10 +63,10 @@ export const MessageList: React.FC<MessageListProps> = ({
           </div>
 
           <div
-            className="feature-card"
+            className={`${styles.featureCard} feature-card`}
             onClick={() => onPromptClick('Calculate the compound annual growth rate if initial is 120000 and final is 340000 over 5 years.')}
           >
-            <div className="feature-card-header">
+            <div className={`${styles.featureCardHeader} feature-card-header`}>
               <Calculator size={15} style={{ color: 'var(--accent-green)' }} />
               <span>Safe Calculations</span>
             </div>
@@ -73,12 +74,12 @@ export const MessageList: React.FC<MessageListProps> = ({
           </div>
 
           <div
-            className="feature-card"
+            className={`${styles.featureCard} feature-card`}
             onClick={() =>
               onPromptClick('How can I embed this agent interface inside a Looker dashboard or extension?')
             }
           >
-            <div className="feature-card-header">
+            <div className={`${styles.featureCardHeader} feature-card-header`}>
               <ImageIcon size={15} style={{ color: 'var(--accent-blue)' }} />
               <span>Looker Integration</span>
             </div>
@@ -90,7 +91,7 @@ export const MessageList: React.FC<MessageListProps> = ({
   }
 
   return (
-    <div className="message-thread">
+    <div className={`${styles.messageThread} message-thread`}>
       {messages.map((message) => (
         <MessageItem
           key={message.id}
