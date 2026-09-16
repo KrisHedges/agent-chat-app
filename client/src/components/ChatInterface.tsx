@@ -136,7 +136,7 @@ export const ChatInterface: React.FC = () => {
                   title="Expand sidebar"
                   aria-label="Expand sidebar"
                 >
-                  <Menu size={18} />
+                  <Menu size={20} strokeWidth={2} />
                 </button>
               )}
             </div>

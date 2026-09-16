@@ -55,24 +55,32 @@
 }
 
 .hamburgerBtn {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
+  padding: 0 !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
-  color: var(--text-secondary);
+  color: var(--text-primary);
   cursor: pointer;
   box-shadow: var(--shadow-sm);
   transition: all 0.15s ease;
+  flex-shrink: 0;
 }
 
 .hamburgerBtn:hover {
-  background: var(--bg-hover);
+  background: var(--bg-tertiary);
   border-color: var(--accent-blue);
   color: var(--accent-blue);
+}
+
+.hamburgerBtn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 }
 
 .toolbarTitleGroup {
