@@ -5,7 +5,7 @@ import { MessageList } from './MessageList.js';
 import { InputBar } from './InputBar.js';
 import { SettingsDrawer } from './SettingsDrawer.js';
 import { ConversationSidebar } from './ConversationSidebar.js';
-import { Bot, Sliders, ShieldCheck, Box, PanelLeftClose, PanelLeft, Plus } from 'lucide-react';
+import { Bot, Sliders, ShieldCheck, Box, Menu, Plus, RotateCcw } from 'lucide-react';
 import { AttachmentCategory } from '../types/index.js';
 import styles from './ChatInterface.module.css';
 
@@ -30,6 +30,7 @@ export const ChatInterface: React.FC = () => {
     sendMessage,
     retryLastMessage,
     startNewChat,
+    clearChat,
     loadConversation,
     deleteConversation,
   } = useAgentChat(lookerHost.user.id);
@@ -110,57 +111,6 @@ export const ChatInterface: React.FC = () => {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      {/* Top Header */}
-      <header className={`${styles.appHeader} app-header`}>
-        <div className={styles.headerBrand}>
-          <button
-            className={`btn btn-ghost ${styles.headerGhostBtn}`}
-            style={{ padding: '7px' }}
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            title={isSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-          >
-            {isSidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeft size={18} />}
-          </button>
-
-          <div className={styles.headerLogo}>
-            <Bot size={20} />
-          </div>
-
-          <div className={styles.headerTitleGroup}>
-            <h1>Gemini Agent Assistant</h1>
-            <span>
-              {lookerHost.isLooker ? (
-                <span style={{ color: 'var(--accent-green)' }}>
-                  <ShieldCheck size={11} style={{ display: 'inline', marginRight: '4px' }} />
-                  Looker Extension Mode ({lookerHost.user.name})
-                </span>
-              ) : (
-                <span style={{ color: 'var(--accent-amber)' }}>
-                  <Box size={11} style={{ display: 'inline', marginRight: '4px' }} />
-                  Standalone Dev ({lookerHost.user.name})
-                </span>
-              )}
-            </span>
-          </div>
-        </div>
-
-        <div className={styles.headerActions}>
-          <button className={`btn btn-ghost ${styles.headerGhostBtn}`} onClick={startNewChat} title="Start new chat">
-            <Plus size={14} />
-            <span>New Chat</span>
-          </button>
-
-          <button
-            className={`btn btn-ghost ${styles.headerGhostBtn}`}
-            onClick={() => setIsSettingsOpen(true)}
-            title="Configure agent model and skills"
-          >
-            <Sliders size={14} />
-            <span>Settings</span>
-          </button>
-        </div>
-      </header>
-
       {/* Main Body with Sidebar + Chat Layout */}
       <div className={`${styles.appBodyLayout} app-body-layout`}>
         <ConversationSidebar
@@ -175,6 +125,72 @@ export const ChatInterface: React.FC = () => {
         />
 
         <main className={`${styles.chatLayout} chat-layout`}>
+          {/* Chat Content Window Toolbar */}
+          <div className={styles.chatToolbar} data-testid="chat-toolbar">
+            <div className={styles.toolbarLeft}>
+              <button
+                type="button"
+                className={`${styles.hamburgerBtn} btn`}
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                title={isSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+                aria-label={isSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+              >
+                <Menu size={18} />
+              </button>
+
+              <div className={styles.toolbarTitleGroup}>
+                <Bot size={18} style={{ color: 'var(--accent-blue)' }} />
+                <span className={styles.toolbarTitle}>Gemini Agent Assistant</span>
+                <span>
+                  {lookerHost.isLooker ? (
+                    <span style={{ color: 'var(--accent-green)' }} className={styles.toolbarBadge}>
+                      <ShieldCheck size={11} style={{ display: 'inline', marginRight: '3px' }} />
+                      Looker Extension Mode ({lookerHost.user.name})
+                    </span>
+                  ) : (
+                    <span style={{ color: 'var(--accent-amber)' }} className={styles.toolbarBadge}>
+                      <Box size={11} style={{ display: 'inline', marginRight: '3px' }} />
+                      Standalone Dev ({lookerHost.user.name})
+                    </span>
+                  )}
+                </span>
+              </div>
+            </div>
+
+            <div className={styles.toolbarRight}>
+              <button
+                type="button"
+                className={`${styles.toolbarBtn} ${styles.toolbarBtnPrimary} btn`}
+                onClick={startNewChat}
+                title="Start new chat"
+              >
+                <Plus size={14} />
+                <span>New Chat</span>
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.toolbarBtn} btn`}
+                onClick={clearChat}
+                disabled={messages.length === 0 || isLoading}
+                title="Clear chat messages"
+              >
+                <RotateCcw size={14} />
+                <span>Clear</span>
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.toolbarBtn} btn`}
+                onClick={() => setIsSettingsOpen(true)}
+                title="Configure agent model and skills"
+              >
+                <Sliders size={14} />
+                <span>Settings</span>
+              </button>
+            </div>
+          </div>
+
           <MessageList
             messages={messages}
             onPromptClick={(prompt) => sendMessage(prompt)}
