@@ -41,8 +41,8 @@ describe('ConversationSidebar Component', () => {
     },
   ];
 
-  it('returns null when isOpen is false', () => {
-    const { container } = render(
+  it('renders closed state with data-open="false" and aria-hidden when isOpen is false', () => {
+    render(
       <StandaloneProvider>
         <ConversationSidebar
           isOpen={false}
@@ -56,7 +56,10 @@ describe('ConversationSidebar Component', () => {
         />
       </StandaloneProvider>
     );
-    expect(container.firstChild).toBeNull();
+    const sidebar = screen.getByTestId('sidebar-container');
+    expect(sidebar.getAttribute('data-open')).toBe('false');
+    expect(sidebar.getAttribute('aria-hidden')).toBe('true');
+    expect(screen.queryByTitle('Collapse sidebar')).toBeNull();
   });
 
   it('renders empty state when no conversations exist', () => {

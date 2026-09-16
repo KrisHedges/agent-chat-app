@@ -57,7 +57,8 @@ describe('ChatInterface Component', () => {
     fireEvent.click(collapseBtn);
 
     // Sidebar is closed
-    expect(screen.queryByText('No saved conversations yet.')).toBeNull();
+    const sidebar = screen.getByTestId('sidebar-container');
+    expect(sidebar.getAttribute('data-open')).toBe('false');
     expect(screen.queryByTitle('Collapse sidebar')).toBeNull();
 
     // Hamburger button is now visible in toolbar
@@ -65,8 +66,9 @@ describe('ChatInterface Component', () => {
     fireEvent.click(expandBtn);
 
     // Sidebar is open again
-    expect(await screen.findByText('No saved conversations yet.')).toBeDefined();
+    expect(sidebar.getAttribute('data-open')).toBe('true');
     expect(screen.queryByTitle('Expand sidebar')).toBeNull();
+    expect(screen.getByTitle('Collapse sidebar')).toBeDefined();
   });
 
   it('opens and closes Settings drawer', async () => {
@@ -226,7 +228,7 @@ describe('ChatInterface Component', () => {
     // Toggle sidebar closed using the single collapse button in the sidebar
     const sidebarCollapseBtn = screen.getByTitle('Collapse sidebar');
     fireEvent.click(sidebarCollapseBtn);
-    expect(screen.queryByText('No saved conversations yet.')).toBeNull();
+    expect(screen.getByTestId('sidebar-container').getAttribute('data-open')).toBe('false');
 
     // Setup mock FileReader for input bar attachment
     class MockFileReader {

@@ -33,6 +33,7 @@
   overflow: hidden;
   position: relative;
   background-color: var(--bg-primary);
+  min-width: 0;
 }
 
 /* Chat Content Window Toolbar */
@@ -61,20 +62,31 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
+  background: transparent;
+  border: 1px solid transparent;
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
   transition: all 0.15s ease;
   flex-shrink: 0;
+  animation: hamburgerFadeIn var(--transition-speed-medium, 180ms) var(--transition-ease-default, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+@keyframes hamburgerFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.85) translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
 }
 
 .hamburgerBtn:hover {
-  background: var(--bg-tertiary);
-  border-color: var(--accent-blue);
-  color: var(--accent-blue);
+  background: var(--bg-hover);
+  color: var(--text-primary);
 }
 
 .hamburgerBtn svg {
@@ -149,4 +161,11 @@
   background: var(--accent-blue-hover);
   border-color: var(--accent-blue-hover);
   color: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hamburgerBtn {
+    animation: none !important;
+    transition: none !important;
+  }
 }

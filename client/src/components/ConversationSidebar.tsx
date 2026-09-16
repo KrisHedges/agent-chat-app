@@ -1,7 +1,7 @@
 import React from 'react';
 import { ConversationSummary } from '../types/index.js';
 import { useLookerHost } from '../looker/StandaloneProvider.js';
-import { MessageSquare, Trash2, ChevronLeft, UserCheck, Shield } from 'lucide-react';
+import { MessageSquare, Trash2, Menu, UserCheck, Shield } from 'lucide-react';
 import styles from './ConversationSidebar.module.css';
 
 interface ConversationSidebarProps {
@@ -57,24 +57,29 @@ export const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
 
   const grouped = groupConversations();
 
-  if (!isOpen) {
-    return null;
-  }
-
   return (
-    <aside className={`${styles.sidebarContainer} sidebar-container`}>
-      {/* Sidebar Header: Title and Collapse Button */}
-      <div className={`${styles.sidebarHeader} sidebar-header`}>
-        <span className={styles.sidebarTitle}>Chats</span>
-        <button
-          className={`btn btn-ghost ${styles.btnIcon}`}
-          onClick={onToggle}
-          title="Collapse sidebar"
-          aria-label="Collapse sidebar"
-        >
-          <ChevronLeft size={16} />
-        </button>
-      </div>
+    <aside
+      data-testid="sidebar-container"
+      data-open={isOpen}
+      aria-hidden={!isOpen}
+      className={`${styles.sidebarContainer} ${isOpen ? styles.sidebarOpen : styles.sidebarClosed} sidebar-container`}
+    >
+      <div className={`${styles.sidebarInner} sidebar-inner`}>
+        {/* Sidebar Header: Title and Collapse Button */}
+        <div className={`${styles.sidebarHeader} sidebar-header`}>
+          <span className={styles.sidebarTitle}>Chats</span>
+          {isOpen && (
+            <button
+              type="button"
+              className={`${styles.sidebarToggleBtn} btn`}
+              onClick={onToggle}
+              title="Collapse sidebar"
+              aria-label="Collapse sidebar"
+            >
+              <Menu size={20} strokeWidth={2} />
+            </button>
+          )}
+        </div>
 
       {/* Conversation Thread List */}
       <div className={`${styles.sidebarScrollArea} sidebar-scroll-area`}>
@@ -182,6 +187,7 @@ export const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
           </div>
         )}
       </div>
-    </aside>
-  );
+    </div>
+  </aside>
+);
 };

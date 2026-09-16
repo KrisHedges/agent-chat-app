@@ -81,4 +81,9 @@
   /* Font Stacks */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+
+  /* Transitions & Animation Timing */
+  --transition-speed-fast: 100ms;
+  --transition-speed-medium: 180ms;
+  --transition-ease-default: cubic-bezier(0.16, 1, 0.3, 1);
 }

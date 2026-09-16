@@ -8,7 +8,31 @@
   height: 100%;
   overflow: hidden;
   z-index: 5;
-  transition: width 0.2s ease;
+  transition: width var(--transition-speed-medium, 300ms) var(--transition-ease-default, cubic-bezier(0.4, 0, 0.2, 1)),
+              min-width var(--transition-speed-medium, 300ms) var(--transition-ease-default, cubic-bezier(0.4, 0, 0.2, 1)),
+              border-color var(--transition-speed-medium, 300ms) ease,
+              opacity var(--transition-speed-medium, 300ms) ease;
+  will-change: width, min-width;
+  flex-shrink: 0;
+}
+
+.sidebarClosed,
+.sidebarContainer[data-open="false"] {
+  width: 0 !important;
+  min-width: 0 !important;
+  border-right-color: transparent !important;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sidebarInner {
+  width: 280px;
+  min-width: 280px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .sidebarHeader {
@@ -57,6 +81,34 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+.sidebarToggleBtn {
+  width: 34px;
+  height: 34px;
+  padding: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+  box-shadow: none;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.sidebarToggleBtn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.sidebarToggleBtn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 }
 
 .sidebarScrollArea {
@@ -285,4 +337,10 @@
   font-size: 11px;
   color: var(--accent-green);
   font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebarContainer {
+    transition: none !important;
+  }
 }
