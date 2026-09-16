@@ -30,7 +30,7 @@ describe('ToolExecutionCard Component', () => {
 
   it('expands and collapses on header click, showing args and result', () => {
     render(<ToolExecutionCard toolCall={sampleCall} toolResult={sampleResult} />);
-    const header = screen.getByText('skill: calculator').closest('.tool-card-header')!;
+    const header = screen.getByTestId('tool-card-header');
 
     // Click to expand
     fireEvent.click(header);
@@ -46,7 +46,7 @@ describe('ToolExecutionCard Component', () => {
 
   it('expands without result when toolResult is not provided', () => {
     render(<ToolExecutionCard toolCall={sampleCall} />);
-    const header = screen.getByText('skill: calculator').closest('.tool-card-header')!;
+    const header = screen.getByTestId('tool-card-header');
 
     fireEvent.click(header);
     expect(screen.getByText('Arguments:')).toBeDefined();

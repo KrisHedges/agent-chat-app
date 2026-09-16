@@ -94,6 +94,8 @@ export const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
                     return (
                       <div
                         key={conv.id}
+                        data-testid="conversation-item"
+                        data-active={isActive}
                         className={`${styles.sidebarItem} ${isActive ? `${styles.sidebarItemActive} active` : ''} sidebar-item`}
                         onClick={() => onSelect(conv.id)}
                       >
@@ -130,7 +132,12 @@ export const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
       {/* User Identity & Substitute User Switcher Footer */}
       <div className={`${styles.sidebarFooter} sidebar-footer`}>
         <div className={`${styles.userProfileRow} user-profile-row`}>
-          <div className={`${styles.userAvatar} user-avatar`} style={{ backgroundColor: user.avatarColor || '#388bfd' }}>
+          <div
+            data-testid="user-avatar"
+            data-avatar-color={user.avatarColor || '#388bfd'}
+            className={`${styles.userAvatar} user-avatar`}
+            style={{ backgroundColor: user.avatarColor || '#388bfd' }}
+          >
             {user.avatarInitials}
           </div>
           <div className={`${styles.userInfo} user-info`}>

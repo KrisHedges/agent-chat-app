@@ -41,12 +41,12 @@ describe('SettingsDrawer Component', () => {
     expect(handleClose).toHaveBeenCalledTimes(1);
 
     // Click overlay
-    const overlay = document.querySelector('.drawer-overlay')!;
+    const overlay = screen.getByTestId('drawer-overlay');
     fireEvent.click(overlay);
     expect(handleClose).toHaveBeenCalledTimes(2);
 
     // Click panel stops propagation
-    const panel = document.querySelector('.drawer-panel')!;
+    const panel = screen.getByTestId('drawer-panel');
     fireEvent.click(panel);
     expect(handleClose).toHaveBeenCalledTimes(2);
   });

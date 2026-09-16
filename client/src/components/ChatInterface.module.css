@@ -9,6 +9,11 @@
   color: var(--text-primary);
 }
 
+.appContainer[data-drag-over="true"] {
+  outline: 2px dashed var(--accent-blue);
+  outline-offset: -2px;
+}
+
 .appHeader {
   height: 60px;
   min-height: 60px;

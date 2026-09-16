@@ -90,15 +90,15 @@ describe('ChatInterface Component', () => {
 
     expect(await screen.findByText('Gemini Agent Assistant')).toBeDefined();
 
-    const appContainer = document.querySelector('.app-container')!;
+    const appContainer = screen.getByTestId('chat-container');
 
     // Drag over
     fireEvent.dragOver(appContainer);
-    expect((appContainer as HTMLElement).style.outline).toContain('dashed');
+    expect(appContainer.getAttribute('data-drag-over')).toBe('true');
 
     // Drag leave
     fireEvent.dragLeave(appContainer);
-    expect((appContainer as HTMLElement).style.outline).toBe('none');
+    expect(appContainer.getAttribute('data-drag-over')).toBe('false');
 
     // Setup mock FileReader
     class MockFileReader {

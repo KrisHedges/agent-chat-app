@@ -111,8 +111,8 @@ describe('ConversationSidebar Component', () => {
     expect(screen.getByText('Older')).toBeDefined();
 
     // Active conversation check
-    const todayItem = screen.getByText('Today Conversation').closest('.sidebar-item')!;
-    expect(todayItem.classList.contains('active')).toBe(true);
+    const todayItem = screen.getByText('Today Conversation').closest('[data-testid="conversation-item"]')!;
+    expect(todayItem.getAttribute('data-active')).toBe('true');
 
     // Click conversation
     const yestItem = screen.getByText('Yesterday Conversation');
@@ -245,9 +245,10 @@ describe('ConversationSidebar Component', () => {
       </LookerHostContext.Provider>
     );
 
-    // Verify avatar fallback color style
-    const avatar = document.querySelector('.user-avatar') as HTMLElement;
-    expect(avatar.style.backgroundColor).toBe('rgb(56, 139, 253)'); // #388bfd
+    // Verify avatar fallback data attribute and initials
+    const avatar = screen.getByTestId('user-avatar');
+    expect(avatar.getAttribute('data-avatar-color')).toBe('#388bfd');
+    expect(avatar.textContent).toBe(userWithoutColor.avatarInitials);
 
     // Change to unknown user ID
     const select = screen.getByRole('combobox') as HTMLSelectElement;

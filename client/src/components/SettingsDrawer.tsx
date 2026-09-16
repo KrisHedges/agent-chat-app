@@ -19,8 +19,16 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className={`${styles.drawerOverlay} drawer-overlay`} onClick={onClose}>
-      <div className={`${styles.drawerPanel} drawer-panel`} onClick={(e) => e.stopPropagation()}>
+    <div
+      data-testid="drawer-overlay"
+      className={`${styles.drawerOverlay} drawer-overlay`}
+      onClick={onClose}
+    >
+      <div
+        data-testid="drawer-panel"
+        className={`${styles.drawerPanel} drawer-panel`}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className={`${styles.drawerHeader} drawer-header`}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Sliders size={18} />

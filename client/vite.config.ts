@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { configDefaults } from 'vitest/config';
 
 export default defineConfig({
   plugins: [react()],
@@ -8,11 +9,19 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./test/setup.ts'],
+    exclude: [...configDefaults.exclude, 'coverage/**', '**/coverage/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],
+      reportsDirectory: './coverage',
       include: ['src/**/*.ts', 'src/**/*.tsx'],
-      exclude: ['src/main.tsx', 'src/types/**'],
+      exclude: [
+        ...(configDefaults.coverage.exclude || []),
+        'src/main.tsx',
+        'src/types/**',
+        'coverage/**',
+        '**/coverage/**',
+      ],
     },
   },
   server: {

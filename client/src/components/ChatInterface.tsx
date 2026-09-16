@@ -104,13 +104,11 @@ export const ChatInterface: React.FC = () => {
   return (
     <div
       className={`${styles.appContainer} app-container`}
+      data-testid="chat-container"
+      data-drag-over={isDragOver}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      style={{
-        outline: isDragOver ? '2px dashed var(--accent-blue)' : 'none',
-        outlineOffset: '-2px',
-      }}
     >
       {/* Top Header */}
       <header className={`${styles.appHeader} app-header`}>

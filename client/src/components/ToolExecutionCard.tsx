@@ -13,8 +13,13 @@ export const ToolExecutionCard: React.FC<ToolExecutionCardProps> = ({ toolCall, 
   const isCompleted = Boolean(toolResult);
 
   return (
-    <div className={`${styles.toolCard} tool-card`}>
-      <div className={`${styles.toolCardHeader} tool-card-header`} onClick={() => setIsExpanded(!isExpanded)}>
+    <div data-testid="tool-execution-card" className={`${styles.toolCard} tool-card`}>
+      <div
+        data-testid="tool-card-header"
+        data-expanded={isExpanded}
+        className={`${styles.toolCardHeader} tool-card-header`}
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
         <div className={`${styles.toolBadge} tool-badge`}>
           <Wrench size={13} />
           <span>skill: {toolCall.name}</span>
