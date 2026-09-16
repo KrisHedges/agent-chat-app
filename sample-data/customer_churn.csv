@@ -1,0 +1,6 @@
+customer_id,plan,mrr,churn_risk,months_active
+c_01,Starter,49,low,14
+c_02,Professional,199,high,3
+c_03,Enterprise,999,low,28
+c_04,Professional,199,medium,8
+c_05,Starter,49,high,2

@@ -1,0 +1,28 @@
+{
+  "name": "agent-chat-app-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Generic Gemini Agent Framework and Multi-Modal React Chat Interface with Looker Compatibility",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently -n \"server,client\" -c \"blue,green\" \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "npm --workspace=server run dev",
+    "dev:client": "npm --workspace=client run dev",
+    "build": "npm --workspace=server run build && npm --workspace=client run build",
+    "build:client": "npm --workspace=client run build",
+    "build:server": "npm --workspace=server run build",
+    "test": "npm --workspace=server run test && npm --workspace=client run test",
+    "test:debug": "DEBUG=1 npm test",
+    "test:coverage": "npm --workspace=server run test:coverage && npm --workspace=client run test:coverage"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
+    "@vitest/coverage-v8": "^4.1.11",
+    "concurrently": "^9.1.0",
+    "jsdom": "^29.1.1"
+  }
+}

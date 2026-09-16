@@ -1,0 +1,47 @@
+[
+  {
+    "order_id": 1001,
+    "customer": "Acme Corp",
+    "tier": "Enterprise",
+    "revenue": 14250.00,
+    "status": "completed",
+    "region": "North America",
+    "signup_date": "2024-01-15"
+  },
+  {
+    "order_id": 1002,
+    "customer": "Globex Inc",
+    "tier": "Mid-Market",
+    "revenue": 4800.50,
+    "status": "completed",
+    "region": "EMEA",
+    "signup_date": "2024-02-10"
+  },
+  {
+    "order_id": 1003,
+    "customer": "Soylent Corp",
+    "tier": "Growth",
+    "revenue": 1250.00,
+    "status": "refunded",
+    "region": "APAC",
+    "signup_date": "2024-03-01"
+  },
+  {
+    "order_id": 1004,
+    "customer": "Initech",
+    "tier": "Enterprise",
+    "revenue": 21000.00,
+    "status": "completed",
+    "region": "North America",
+    "signup_date": "2024-01-20"
+  },
+  {
+    "order_id": 1005,
+    "customer": "Umbrella Corp",
+    "tier": "Enterprise",
+    "revenue": 33500.00,
+    "status": "pending",
+    "region": "EMEA",
+    "signup_date": "2024-04-12"
+  }
+]

@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Environment variables & secrets
+.env
+.env.*
+*.env
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example
+*.local
+**/*.local
+
+# Local encryption key & persisted conversation data
+server/data/.dev_key
+server/data/conversations/*
+!server/data/conversations/.gitkeep
+
+# Build and distribution artifacts
+dist/
+build/
+client/dist/
+server/dist/
+
+# Test coverage reports
+coverage/
+client/coverage/
+*.lcov
+
+# Temporary logs & test artifacts
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+report.txt
+
+# Operating System & Editor files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
