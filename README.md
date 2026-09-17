@@ -413,42 +413,6 @@ All commands should be executed from the `agent-chat-app` root directory:
 
 ---
 
-## Testing & Code Quality
-
-The project maintains **~98.5% test coverage** with 169 unit tests across 28 suites that execute in **~2.5 seconds**:
-
-```text
-Test Summary:
-✔ Backend (server):  77 / 77 passed (100% on core services) ~0.5s
-✔ Frontend (client): 92 / 92 passed (100% on all components) ~2.0s
-Total: 169 passed, 0 failed, 0 warnings
-```
-
-### Coverage by Component & Module
-
-| Area | Module / Component | Line Coverage | Status |
-| :--- | :--- | :---: | :---: |
-| **Frontend** | `App.tsx` | **100%** | ✅ Full |
-| **Frontend** | `AttachmentChip.tsx` | **100%** | ✅ Full |
-| **Frontend** | `ChatInterface.tsx` | **100%** | ✅ Full |
-| **Frontend** | `ConversationSidebar.tsx` | **100%** | ✅ Full (100% all) |
-| **Frontend** | `FileUploadZone.tsx` | **100%** | ✅ Full |
-| **Frontend** | `InputBar.tsx` | **100%** | ✅ Full |
-| **Frontend** | `MessageItem.tsx` | **100%** | ✅ Full (100% all) |
-| **Frontend** | `MessageList.tsx` | **100%** | ✅ Full |
-| **Frontend** | `SettingsDrawer.tsx` | **100%** | ✅ Full |
-| **Frontend** | `ToolExecutionCard.tsx` | **100%** | ✅ Full |
-| **Frontend** | `LookerBridge.tsx` & `StandaloneProvider.tsx` | **100%** | ✅ Full |
-| **Frontend** | `useAgentChat.ts` | **97.22%** | ✅ Near-Full |
-| **Backend** | `gemini-client.ts` | **100%** | ✅ Full (100% all) |
-| **Backend** | `orchestrator.ts` | **100%** | ✅ Full |
-| **Backend** | `registry.ts` | **100%** | ✅ Full (100% all) |
-| **Backend** | `conversations.ts` (routes) | **100%** | ✅ Full |
-| **Backend** | `conversation-store.ts` (storage) | **100%** | ✅ Full |
-| **Backend** | `crypto.ts` | **98.00%** | ✅ Near-Full |
-| **Backend** | `chat.ts` (routes) | **96.83%** | ✅ Near-Full |
-| **Backend** | `calculator.ts` & `data-inspector.ts` | **100% Logic** | ✅ Full (Types stripped) |
-
 ### Debugging While Developing Tests
 When writing or troubleshooting tests, you can inspect the application's internal logs by passing the `DEBUG=1` environment variable:
 
