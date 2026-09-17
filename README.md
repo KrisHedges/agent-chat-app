@@ -9,13 +9,14 @@
 ## 📑 Table of Contents
 1. [What Is This Project?](#what-is-this-project)
 2. [Key Capabilities & Features](#key-capabilities--features)
-3. [System Architecture](#system-architecture)
-4. [Architectural Decisions & Rationale](#architectural-decisions--rationale)
-5. [Quickstart: Running Locally in 3 Steps](#quickstart-running-locally-in-3-steps)
-6. [Commands & Operations Cheatsheet](#commands--operations-cheatsheet)
-7. [Testing & Code Quality](#testing--code-quality)
-8. [Looker Integration & Extension Guide](#looker-integration--extension-guide)
-9. [Troubleshooting & FAQ](#troubleshooting--faq)
+3. [🚀 Custom Agent Developer Guide & Manifest](#-custom-agent-developer-guide--manifest)
+4. [System Architecture](#system-architecture)
+5. [Architectural Decisions & Rationale](#architectural-decisions--rationale)
+6. [Quickstart: Running Locally in 3 Steps](#quickstart-running-locally-in-3-steps)
+7. [Commands & Operations Cheatsheet](#commands--operations-cheatsheet)
+8. [Testing & Code Quality](#testing--code-quality)
+9. [Looker Integration & Extension Guide](#looker-integration--extension-guide)
+10. [Troubleshooting & FAQ](#troubleshooting--faq)
 
 ---
 
@@ -55,6 +56,129 @@ Think of it as your personal analytical assistant:
 - **Model Selector & Settings Drawer**: Select verified models on the fly (`gemini-3.8-flash`, `gemini-3.7-flash`, `gemini-3.1-pro`, `gemini-3.0-pro`, `gemini-2.5-flash`, `gemini-2.0-flash`) and customize system instructions per session.
 - **Collapsible Tool Execution Cards**: View real-time status badges (`Running skill: calculator...`), expandable function input arguments, and formatted JSON output responses.
 - **Smart Error Recovery & Rollback**: Automatic detection of rate limits (429), high-demand spikes (503 Service Unavailable), and network drops, featuring a `[🔄 Try Again]` button that rolls back the failed agent turn cleanly.
+
+---
+
+## 🚀 Custom Agent Developer Guide & Manifest
+
+This starter kit is specifically engineered to be cloned and transformed into your own custom domain agent (e.g. *Looker Data Advisor*, *Sales Forecasting Assistant*, *Customer Support Copilot*).
+
+All agent persona, configuration, and security settings are version-controlled in the filesystem—not hidden away in opaque browser storage.
+
+### 1. Central Agent Manifest (`agent.config.json`)
+
+The manifest at the project root defines the identity, model, and operational parameters for your agent:
+
+```json
+{
+  "name": "Looker Data Advisor",
+  "tagline": "AI Analytical Assistant for Explores, Visualizations, and KPIs",
+  "model": "gemini-3.8-flash",
+  "temperature": 0.4,
+  "systemPromptFile": "agent.prompt.md",
+  "starterPrompts": [
+    "Analyze our quarterly regional sales trends",
+    "Suggest the best visualization for monthly churn data",
+    "Calculate rolling 7-day average revenue",
+    "Identify anomalous drop-offs in customer retention"
+  ],
+  "enabledSkills": [
+    "calculator",
+    "data_inspector"
+  ],
+  "lockdown": {
+    "disableClientOverrides": false,
+    "hideSettingsInProduction": true
+  }
+}
+```
+
+#### Manifest Fields:
+- **`name`**: The display name of your agent, rendered in browser titles and empty state headers.
+- **`tagline`**: Subtitle displayed below the agent title on the welcome screen.
+- **`model`**: Primary Gemini model (e.g. `gemini-3.8-flash`, `gemini-3.7-flash`, `gemini-3.1-pro`).
+- **`temperature`**: Sampling temperature sent to the Gemini API (`0.0` for deterministic math/code, up to `1.0` for creative tasks).
+- **`systemPromptFile`**: Relative path to the markdown file containing the system instructions.
+- **`starterPrompts`**: Array of domain-specific starter prompts displayed as clickable quick chips on the empty chat screen.
+- **`lockdown.disableClientOverrides`**: When `true`, the server strictly ignores any client-side prompt or model tampering.
+- **`lockdown.hideSettingsInProduction`**: When `true`, hides the Settings drawer icon in production builds.
+
+---
+
+### 2. System Prompt Engineering in Markdown (`agent.prompt.md`)
+
+Rather than maintaining prompts inside code strings or database rows, author your agent's persona, operating principles, and constraints in standard GitHub-flavored Markdown in `agent.prompt.md`:
+
+```markdown
+# Agent Persona & Mission
+You are an expert, proactive Looker Data Advisor powered by Google Gemini.
+You assist analysts with data interpretation, LookML exploration, and visualization selection.
+
+## Operating Principles & Guidelines
+1. **Clarity & Precision**: Always maintain mathematical accuracy and transparency.
+2. **Data Inspection**: When the user attaches JSON data, inspect row counts, schema keys, and null rates using the `data_inspector` tool.
+3. **Tool Verification**: Use the `calculator` tool whenever precise mathematical operations or statistical rollups are required. Never hallucinate calculated metrics.
+```
+
+> [!TIP]
+> **Live Hot-Reloading in Development**: While developing locally (`NODE_ENV !== 'production'`), the server automatically detects changes to `agent.prompt.md` and reloads the prompt on the fly. You can tweak your prompt in VS Code and test it on the very next chat message without restarting the server!
+
+---
+
+### 3. Creating Custom Enterprise Skills
+
+To add a new tool or skill to your agent, add a TypeScript file in `server/src/agent/skills/` implementing the typed `ToolDefinition` interface:
+
+```typescript
+// server/src/agent/skills/query-runner.ts
+import { ToolDefinition } from '../types.js';
+
+interface QueryParams {
+  query: string;
+  limit?: number;
+}
+
+export const queryRunnerTool: ToolDefinition<QueryParams> = {
+  name: 'query_runner',
+  description: 'Executes a verified SQL or Looker Explore query and returns JSON rows.',
+  parameters: {
+    type: 'object',
+    properties: {
+      query: { type: 'string', description: 'SQL or LookML query to run' },
+      limit: { type: 'number', description: 'Maximum rows to return (default 50)' },
+    },
+    required: ['query'],
+  },
+  execute: async ({ query, limit = 50 }) => {
+    // Perform database lookup or Looker API call
+    return { status: 'success', rowsRetrieved: 25, sample: [] };
+  },
+};
+```
+
+Register it in `server/src/agent/skills/registry.ts`:
+
+```typescript
+import { queryRunnerTool } from './query-runner.js';
+
+export class ToolRegistry {
+  constructor() {
+    this.register(dataInspectorTool);
+    this.register(calculatorTool);
+    this.register(queryRunnerTool); // Register your custom skill
+  }
+}
+```
+
+---
+
+### 4. Production Lockdown & Looker Deployment ("The Ship Switch")
+
+When shipping your agent to end-users (e.g. deployed in a corporate portal or embedded inside a Google Looker extension):
+
+1. **Tamper-Proof Execution**: Set `NODE_ENV=production` or configure `"disableClientOverrides": true` in `agent.config.json`. The server enforces your prompt and model on every turn, rejecting any client tampering.
+2. **Clean User Interface**: In production, the Settings button is automatically hidden (or placed in read-only mode) so end-users cannot alter system instructions, change models, or bypass domain guardrails.
+3. **Automatic Context Ingestion**: When running embedded inside Looker, host environment context (active `dashboardId`, `exploreName`, user credentials) is automatically injected into the turn's system instructions by the orchestrator.
 
 ---
 
@@ -105,9 +229,12 @@ flowchart TD
 
 ```
 agent-chat-app/
+├── agent.config.json                # Central Agent Manifest (name, model, starters, skills, lockdown)
+├── agent.prompt.md                  # Authoritative system prompt in Markdown (hot-reloads in dev)
 ├── server/                          # Backend Agent Service (Node.js / Express / TypeScript)
 │   ├── src/
 │   │   ├── agent/
+│   │   │   ├── agent-config.ts      # Manifest loader, hot-reloader, and lockdown enforcer
 │   │   │   ├── gemini-client.ts     # @google/genai SDK client (with dev mock fallback)
 │   │   │   ├── orchestrator.ts      # Multi-turn streaming agent loop & multi-modal processor
 │   │   │   ├── types.ts             # Typed schemas for messages, parts, attachments & SSE
@@ -116,6 +243,7 @@ agent-chat-app/
 │   │   │       ├── calculator.ts    # Built-in tool: safe math evaluation
 │   │   │       └── data-inspector.ts# Built-in tool: profiles & inspects JSON/CSV schemas
 │   │   ├── routes/
+│   │   │   ├── agent-config.ts      # GET /api/agent/config manifest endpoint
 │   │   │   ├── chat.ts              # SSE streaming endpoint (POST /api/chat/stream)
 │   │   │   └── conversations.ts     # REST endpoints for encrypted history CRUD
 │   │   ├── storage/
@@ -125,7 +253,7 @@ agent-chat-app/
 │   │   │   └── logger.ts            # Test-aware application logger (silenced in tests, DEBUG=1 override)
 │   │   ├── config.ts                # Environment and default model configurations
 │   │   └── index.ts                 # Express server entrypoint
-│   ├── test/                        # 12 Node.js native test suites (66 tests)
+│   ├── test/                        # 13 Node.js native test suites (71 tests)
 │   └── package.json
 │
 ├── client/                          # Frontend Application (Vite / React 18 / TypeScript)
@@ -140,7 +268,7 @@ agent-chat-app/
 │   │   ├── types/                   # Frontend shared types
 │   │   ├── App.tsx                  # Dual-mode environment detector (window.self === window.top)
 │   │   └── main.tsx                 # React DOM mount point
-│   ├── test/                        # 13 Vitest + Testing Library test suites (70 tests)
+│   ├── test/                        # 14 Vitest + Testing Library test suites (88 tests)
 │   ├── vite.config.ts               # Vite configuration (port 8080, Looker bundle settings)
 │   └── package.json
 │

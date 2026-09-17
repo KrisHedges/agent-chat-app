@@ -3,6 +3,7 @@ import cors from 'cors';
 import { config } from './config.js';
 import { chatRouter } from './routes/chat.js';
 import { conversationsRouter } from './routes/conversations.js';
+import { agentConfigRouter } from './routes/agent-config.js';
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 // Mount routes
 app.use('/api/chat', chatRouter);
 app.use('/api/conversations', conversationsRouter);
+app.use('/api/agent', agentConfigRouter);
 
 // Root healthcheck
 app.get('/', (_req, res) => {

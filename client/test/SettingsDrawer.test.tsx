@@ -143,4 +143,31 @@ describe('SettingsDrawer Component', () => {
       agentName: 'Looker Analytical Agent',
     });
   });
+
+  it('renders lockdown banner and disables form inputs when isLocked is true', () => {
+    render(
+      <SettingsDrawer
+        isOpen={true}
+        onClose={vi.fn()}
+        settings={{
+          ...initialSettings,
+          isLocked: true,
+          systemPromptFile: 'agent.prompt.md',
+        }}
+        onUpdateSettings={vi.fn()}
+      />
+    );
+
+    expect(screen.getByTestId('lockdown-banner')).toBeDefined();
+    expect(screen.getByText('Locked by Agent Manifest')).toBeDefined();
+
+    const nameInput = screen.getByPlaceholderText(/e\.g\. Gemini Chat Agent Starter Kit/i) as HTMLInputElement;
+    expect(nameInput.disabled).toBe(true);
+
+    const select = screen.getByRole('combobox') as HTMLSelectElement;
+    expect(select.disabled).toBe(true);
+
+    const textarea = screen.getByPlaceholderText(/System prompt is locked to agent\.prompt\.md/i) as HTMLTextAreaElement;
+    expect(textarea.disabled).toBe(true);
+  });
 });

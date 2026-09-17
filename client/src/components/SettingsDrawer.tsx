@@ -1,6 +1,6 @@
 import React from 'react';
 import { AgentSettings } from '../types/index.js';
-import { X, Sliders, Cpu, Wrench, Tag } from 'lucide-react';
+import { X, Sliders, Cpu, Wrench, Tag, Lock } from 'lucide-react';
 import styles from './SettingsDrawer.module.css';
 
 interface SettingsDrawerProps {
@@ -17,6 +17,8 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
   onUpdateSettings,
 }) => {
   if (!isOpen) return null;
+
+  const isLocked = !!settings.isLocked;
 
   return (
     <div
@@ -39,6 +41,34 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
           </button>
         </div>
 
+        {/* Locked Status Banner */}
+        {isLocked && (
+          <div
+            data-testid="lockdown-banner"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '10px 12px',
+              background: 'var(--accent-blue-subtle)',
+              border: '1px solid var(--accent-blue)',
+              borderRadius: 'var(--radius-sm)',
+              fontSize: '12px',
+              color: 'var(--text-primary)',
+              marginBottom: '16px',
+            }}
+          >
+            <Lock size={16} style={{ color: 'var(--accent-blue)', flexShrink: 0 }} />
+            <div>
+              <strong>Locked by Agent Manifest</strong>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                Configured in <code>agent.config.json</code> and{' '}
+                <code>{settings.systemPromptFile || 'agent.prompt.md'}</code>.
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Agent Name Configuration */}
         <div className={`${styles.formGroup} form-group`}>
           <label>
@@ -50,10 +80,13 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
             className={`${styles.formInput} form-input`}
             placeholder="e.g. Gemini Chat Agent Starter Kit"
             value={settings.agentName ?? ''}
+            disabled={isLocked}
             onChange={(e) => onUpdateSettings({ ...settings, agentName: e.target.value })}
           />
           <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-            Configurable name displayed across the workspace and empty state.
+            {isLocked
+              ? 'Managed by agent.config.json'
+              : 'Configurable name displayed across the workspace and empty state.'}
           </span>
         </div>
 
@@ -65,6 +98,7 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
           </label>
           <select
             className={`${styles.formSelect} form-select`}
+            disabled={isLocked}
             value={
               [
                 'gemini-3.8-flash',
@@ -99,7 +133,9 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
             </optgroup>
           </select>
           <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-            Verified model sent to @google/genai SDK.
+            {isLocked
+              ? 'Model locked in agent manifest'
+              : 'Verified model sent to @google/genai SDK.'}
           </span>
         </div>
 
@@ -108,13 +144,20 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
           <label>Custom System Instruction</label>
           <textarea
             className={`${styles.formTextarea} form-textarea`}
-            placeholder="Leave empty to use default agent instructions..."
+            placeholder={
+              isLocked
+                ? 'System prompt is locked to agent.prompt.md'
+                : 'Leave empty to use default agent instructions...'
+            }
             value={settings.systemPrompt}
+            disabled={isLocked}
             onChange={(e) => onUpdateSettings({ ...settings, systemPrompt: e.target.value })}
             rows={5}
           />
           <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-            Defines the persona and constraints for the agent.
+            {isLocked
+              ? `Persona loaded from ${settings.systemPromptFile || 'agent.prompt.md'} (Locked in production)`
+              : 'Defines the persona and constraints for the agent.'}
           </span>
         </div>
 

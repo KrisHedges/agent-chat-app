@@ -45,8 +45,13 @@ export type StreamEvent =
 
 export interface AgentSettings {
   agentName?: string;
+  tagline?: string;
   model: string;
   systemPrompt: string;
+  starterPrompts?: string[];
+  systemPromptFile?: string;
+  isLocked?: boolean;
+  hideSettings?: boolean;
 }
 
 export interface Conversation {

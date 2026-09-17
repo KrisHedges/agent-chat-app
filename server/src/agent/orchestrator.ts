@@ -3,6 +3,7 @@ import { defaultToolRegistry, ToolRegistry } from './skills/registry.js';
 import { Message, StreamEvent, Attachment } from './types.js';
 import { config } from '../config.js';
 import { logger } from '../utils/logger.js';
+import { loadAgentConfig, loadSystemPrompt, isLockdownActive } from './agent-config.js';
 
 
 export interface OrchestratorOptions {
@@ -14,21 +15,15 @@ export interface OrchestratorOptions {
 
 export class AgentOrchestrator {
   private toolRegistry: ToolRegistry;
-  private defaultModel: string;
-  private defaultSystemPrompt: string;
+  private defaultModel?: string;
+  private explicitSystemPrompt?: string;
   private customClient?: any;
 
   constructor(options: OrchestratorOptions = {}) {
     this.toolRegistry = options.toolRegistry || defaultToolRegistry;
-    this.defaultModel = options.model || config.defaultModel;
+    this.defaultModel = options.model;
     this.customClient = options.geminiClient;
-    this.defaultSystemPrompt =
-      options.systemPrompt ||
-      `You are an expert, proactive AI Agent powered by Google Gemini.
-You assist users with data analysis, code, document inspection, visual reasoning, and problem solving.
-Always maintain clarity, correctness, and transparency.
-When the user attaches JSON data, CSVs, or images, inspect them thoroughly.
-Use available tools (e.g. data_inspector, calculator) whenever precise calculations or data profiling is required.`;
+    this.explicitSystemPrompt = options.systemPrompt;
   }
 
   /**
@@ -38,10 +33,29 @@ Use available tools (e.g. data_inspector, calculator) whenever precise calculati
     messages: Message[],
     emit: (event: StreamEvent) => void,
     customPrompt?: string,
-    modelName?: string
+    modelName?: string,
+    contextData?: Record<string, unknown>
   ): Promise<void> {
-    const selectedModel = modelName || this.defaultModel;
-    const systemPrompt = customPrompt || this.defaultSystemPrompt;
+    const isLocked = isLockdownActive();
+    const agentCfg = loadAgentConfig();
+
+    // In lockdown/production, client-supplied prompt and model overrides are strictly ignored
+    const selectedModel = isLocked
+      ? (this.defaultModel || agentCfg.model || config.defaultModel)
+      : (modelName || this.defaultModel || agentCfg.model || config.defaultModel);
+
+    const basePrompt = isLocked
+      ? (this.explicitSystemPrompt || loadSystemPrompt())
+      : (customPrompt || this.explicitSystemPrompt || loadSystemPrompt());
+
+    // Inject active host context (e.g. Looker session, dashboard ID, user metadata)
+    let systemPrompt = basePrompt;
+    if (contextData && Object.keys(contextData).length > 0) {
+      const contextLines = Object.entries(contextData)
+        .map(([k, v]) => `- ${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}`)
+        .join('\n');
+      systemPrompt += `\n\n[Active Host Context]\n${contextLines}`;
+    }
 
     logger.log(`[Orchestrator] isApiKeyConfigured: ${isApiKeyConfigured()}`);
     if (this.customClient === undefined && !isApiKeyConfigured()) {
@@ -85,7 +99,7 @@ Use available tools (e.g. data_inspector, calculator) whenever precise calculati
           config: {
             systemInstruction: systemPrompt,
             tools: geminiTools.length > 0 ? (geminiTools as any) : undefined,
-            temperature: 0.4,
+            temperature: agentCfg.temperature ?? 0.4,
           },
         });
 

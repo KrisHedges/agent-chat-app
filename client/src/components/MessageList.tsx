@@ -10,6 +10,8 @@ interface MessageListProps {
   onRetry?: (messageId: string) => void;
   isLoading?: boolean;
   agentName?: string;
+  tagline?: string;
+  starterPrompts?: string[];
 }
 
 export const MessageList: React.FC<MessageListProps> = ({
@@ -18,6 +20,8 @@ export const MessageList: React.FC<MessageListProps> = ({
   onRetry,
   isLoading,
   agentName,
+  tagline,
+  starterPrompts,
 }) => {
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -33,8 +37,8 @@ export const MessageList: React.FC<MessageListProps> = ({
         </div>
         <h2 className={styles.emptyChatTitle}>{agentName || 'Gemini Chat Agent Starter Kit'}</h2>
         <p className={styles.emptyChatDesc}>
-          A multi-modal agent with extensible skills, real-time streaming, and Looker extension compatibility.
-          Attach JSON files, images, or ask questions below.
+          {tagline ||
+            'A multi-modal agent with extensible skills, real-time streaming, and Looker extension compatibility. Attach JSON files, images, or ask questions below.'}
         </p>
 
         <div className={`${styles.featureCards} feature-cards`}>
@@ -88,6 +92,24 @@ export const MessageList: React.FC<MessageListProps> = ({
             <p>Learn how to connect this agent to Looker extensions and iframe URLs.</p>
           </div>
         </div>
+
+        {starterPrompts && starterPrompts.length > 0 && (
+          <div className={`${styles.starterPromptsList} starter-prompts-list`}>
+            <div className={styles.starterLabel}>Suggested starters:</div>
+            <div className={styles.starterChips}>
+              {starterPrompts.map((prompt, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  className={`${styles.starterChip} btn`}
+                  onClick={() => onPromptClick(prompt)}
+                >
+                  <span>{prompt}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     );
   }

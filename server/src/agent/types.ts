@@ -60,4 +60,5 @@ export interface ChatRequest {
   messages: Message[];
   model?: string;
   systemPrompt?: string;
+  contextData?: Record<string, unknown>;
 }

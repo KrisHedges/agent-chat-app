@@ -62,4 +62,27 @@ describe('MessageList Component', () => {
     render(<MessageList messages={[]} onPromptClick={vi.fn()} agentName="Custom Analytical Agent" />);
     expect(screen.getByText('Custom Analytical Agent')).toBeDefined();
   });
+
+  it('renders starter prompt chips and triggers onPromptClick when clicked', () => {
+    const handlePromptClick = vi.fn();
+    const starterPrompts = [
+      'Analyze quarterly revenue',
+      'Find churned accounts',
+    ];
+
+    render(
+      <MessageList
+        messages={[]}
+        onPromptClick={handlePromptClick}
+        starterPrompts={starterPrompts}
+      />
+    );
+
+    expect(screen.getByText('Suggested starters:')).toBeDefined();
+    expect(screen.getByText('Analyze quarterly revenue')).toBeDefined();
+    expect(screen.getByText('Find churned accounts')).toBeDefined();
+
+    fireEvent.click(screen.getByText('Analyze quarterly revenue'));
+    expect(handlePromptClick).toHaveBeenCalledWith('Analyze quarterly revenue');
+  });
 });

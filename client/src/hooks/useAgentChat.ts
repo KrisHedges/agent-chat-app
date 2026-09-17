@@ -8,7 +8,11 @@ import {
   ConversationSummary,
 } from '../types/index.js';
 
-export function useAgentChat(userId: string, initialSettings?: Partial<AgentSettings>) {
+export function useAgentChat(
+  userId: string,
+  initialSettings?: Partial<AgentSettings>,
+  contextData?: Record<string, unknown>
+) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,6 +30,10 @@ export function useAgentChat(userId: string, initialSettings?: Partial<AgentSett
           agentName: initialSettings?.agentName || parsed.agentName || 'Gemini Chat Agent Starter Kit',
           model: initialSettings?.model || parsed.model || 'gemini-3.8-flash',
           systemPrompt: initialSettings?.systemPrompt ?? parsed.systemPrompt ?? '',
+          starterPrompts: initialSettings?.starterPrompts || parsed.starterPrompts,
+          isLocked: initialSettings?.isLocked ?? parsed.isLocked,
+          hideSettings: initialSettings?.hideSettings ?? parsed.hideSettings,
+          tagline: initialSettings?.tagline || parsed.tagline,
         };
       }
     } catch {}
@@ -33,8 +41,54 @@ export function useAgentChat(userId: string, initialSettings?: Partial<AgentSett
       agentName: initialSettings?.agentName || 'Gemini Chat Agent Starter Kit',
       model: initialSettings?.model || 'gemini-3.8-flash',
       systemPrompt: initialSettings?.systemPrompt || '',
+      starterPrompts: initialSettings?.starterPrompts,
+      isLocked: initialSettings?.isLocked,
+      hideSettings: initialSettings?.hideSettings,
+      tagline: initialSettings?.tagline,
     };
   });
+
+  // Fetch authoritative agent manifest config on startup
+  useEffect(() => {
+    let isMounted = true;
+    fetch('/api/agent/config')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((config) => {
+        if (!isMounted || !config) return;
+        setSettingsState((prev) => {
+          if (config.isLocked) {
+            return {
+              ...prev,
+              agentName: config.name || prev.agentName,
+              model: config.model || prev.model,
+              systemPrompt: config.systemPrompt ?? prev.systemPrompt,
+              starterPrompts: config.starterPrompts || prev.starterPrompts,
+              systemPromptFile: config.systemPromptFile || 'agent.prompt.md',
+              isLocked: true,
+              hideSettings: config.hideSettings ?? false,
+              tagline: config.tagline,
+            };
+          }
+          return {
+            ...prev,
+            agentName: prev.agentName || config.name,
+            model: prev.model || config.model,
+            starterPrompts: config.starterPrompts || prev.starterPrompts,
+            systemPromptFile: config.systemPromptFile || 'agent.prompt.md',
+            isLocked: false,
+            hideSettings: false,
+            tagline: config.tagline,
+          };
+        });
+      })
+      .catch(() => {
+        // Fall back gracefully if offline / during isolated tests
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const setSettings = useCallback((newSettings: AgentSettings | ((prev: AgentSettings) => AgentSettings)) => {
     setSettingsState((prev) => {
@@ -225,8 +279,9 @@ export function useAgentChat(userId: string, initialSettings?: Partial<AgentSett
           },
           body: JSON.stringify({
             messages: thread,
-            model: settings.model,
-            systemPrompt: settings.systemPrompt || undefined,
+            model: settings.isLocked ? undefined : settings.model,
+            systemPrompt: settings.isLocked ? undefined : (settings.systemPrompt || undefined),
+            contextData,
           }),
           signal: abortController.signal,
         });

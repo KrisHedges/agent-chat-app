@@ -6,7 +6,7 @@ import { logger } from '../utils/logger.js';
 export const chatRouter = Router();
 
 chatRouter.post('/stream', async (req: Request, res: Response) => {
-  const { messages, model, systemPrompt } = req.body as ChatRequest;
+  const { messages, model, systemPrompt, contextData } = req.body as ChatRequest;
   const targetModel = model || 'default';
   logger.log(`\n[POST /api/chat/stream] Incoming request: ${messages?.length ?? 0} messages | Model: ${targetModel}`);
 
@@ -42,7 +42,7 @@ chatRouter.post('/stream', async (req: Request, res: Response) => {
   };
 
   try {
-    await defaultOrchestrator.streamTurn(messages, emit, systemPrompt, model);
+    await defaultOrchestrator.streamTurn(messages, emit, systemPrompt, model, contextData);
     logger.log(`[POST /api/chat/stream] Turn finished successfully. (Total events sent: ${eventCount})`);
   } catch (err: unknown) {
     const errorMsg = err instanceof Error ? err.stack || err.message : String(err);

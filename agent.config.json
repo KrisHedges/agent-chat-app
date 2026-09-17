@@ -1,0 +1,21 @@
+{
+  "name": "Gemini Chat Agent Starter Kit",
+  "tagline": "Enterprise AI Assistant powered by Google Gemini",
+  "model": "gemini-3.8-flash",
+  "temperature": 0.4,
+  "systemPromptFile": "agent.prompt.md",
+  "starterPrompts": [
+    "Analyze our quarterly regional sales trends",
+    "Check dataset schema and find outliers",
+    "How can I calculate rolling 7-day average revenue?",
+    "Summarize key metrics from attached report"
+  ],
+  "enabledSkills": [
+    "calculator",
+    "data_inspector"
+  ],
+  "lockdown": {
+    "disableClientOverrides": false,
+    "hideSettingsInProduction": true
+  }
+}

@@ -33,7 +33,7 @@ export const ChatInterface: React.FC = () => {
     clearChat,
     loadConversation,
     deleteConversation,
-  } = useAgentChat(lookerHost.user.id);
+  } = useAgentChat(lookerHost.user.id, undefined, lookerHost.contextData);
 
   // Sync window title with configurable agent name
   useEffect(() => {
@@ -170,15 +170,17 @@ export const ChatInterface: React.FC = () => {
                 <span>Clear</span>
               </button>
 
-              <button
-                type="button"
-                className={`${styles.toolbarBtn} btn`}
-                onClick={() => setIsSettingsOpen(true)}
-                title="Configure agent model and skills"
-              >
-                <Sliders size={14} />
-                <span>Settings</span>
-              </button>
+              {!settings.hideSettings && (
+                <button
+                  type="button"
+                  className={`${styles.toolbarBtn} btn`}
+                  onClick={() => setIsSettingsOpen(true)}
+                  title="Configure agent model and skills"
+                >
+                  <Sliders size={14} />
+                  <span>Settings</span>
+                </button>
+              )}
             </div>
           </div>
 
@@ -188,6 +190,8 @@ export const ChatInterface: React.FC = () => {
             onRetry={retryLastMessage}
             isLoading={isLoading}
             agentName={settings.agentName}
+            tagline={settings.tagline}
+            starterPrompts={settings.starterPrompts}
           />
 
           <InputBar
