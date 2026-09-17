@@ -93,28 +93,7 @@
   flex-shrink: 0;
 }
 
-.toolbarTitleGroup {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
 
-.toolbarTitle {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.toolbarBadge {
-  font-size: 11px;
-  padding: 2px 8px;
-  border-radius: 12px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
 
 .toolbarRight {
   display: flex;

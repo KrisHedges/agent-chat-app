@@ -146,9 +146,6 @@ export const ChatInterface: React.FC = () => {
                   <Menu size={20} strokeWidth={2} />
                 </button>
               )}
-              <span className={styles.toolbarTitle} data-testid="agent-display-name">
-                {settings.agentName || 'Gemini Chat Agent Starter Kit'}
-              </span>
             </div>
 
             <div className={styles.toolbarRight}>
