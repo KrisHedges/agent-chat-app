@@ -12,6 +12,7 @@ interface MessageListProps {
   agentName?: string;
   tagline?: string;
   starterPrompts?: Array<StarterPrompt | string>;
+  modelName?: string;
 }
 
 const DEFAULT_CARDS: StarterPrompt[] = [
@@ -106,6 +107,7 @@ export const MessageList: React.FC<MessageListProps> = ({
   agentName,
   tagline,
   starterPrompts,
+  modelName,
 }) => {
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -161,6 +163,7 @@ export const MessageList: React.FC<MessageListProps> = ({
           message={message}
           onRetry={onRetry}
           isLoading={isLoading}
+          modelName={modelName}
         />
       ))}
       <div ref={bottomRef} />

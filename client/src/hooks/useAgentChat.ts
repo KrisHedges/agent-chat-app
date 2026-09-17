@@ -257,6 +257,7 @@ export function useAgentChat(
         toolCalls: [],
         toolResults: [],
         timestamp: Date.now(),
+        modelName: settings.model,
       };
 
       setMessages([...thread, initialAgentMessage]);

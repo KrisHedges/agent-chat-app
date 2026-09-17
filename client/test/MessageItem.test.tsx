@@ -27,7 +27,7 @@ describe('MessageItem Component', () => {
     expect(screen.getByText('doc.txt')).toBeDefined();
   });
 
-  it('renders agent thinking state when content is empty and no tools', () => {
+  it('renders agent thinking shimmer state when content is empty and includes model name', () => {
     const thinkingMsg: Message = {
       id: 'm_think',
       role: 'model',
@@ -35,8 +35,18 @@ describe('MessageItem Component', () => {
       timestamp: Date.now(),
     };
 
-    render(<MessageItem message={thinkingMsg} />);
+    const { rerender } = render(<MessageItem message={thinkingMsg} />);
     expect(screen.getByText('Thinking...')).toBeDefined();
+
+    rerender(<MessageItem message={thinkingMsg} modelName="gemini-3.8-flash" />);
+    expect(screen.getByText('Thinking with gemini-3.8-flash...')).toBeDefined();
+
+    const msgWithModel: Message = {
+      ...thinkingMsg,
+      modelName: 'gemini-3.7-flash',
+    };
+    rerender(<MessageItem message={msgWithModel} />);
+    expect(screen.getByText('Thinking with gemini-3.7-flash...')).toBeDefined();
   });
 
   it('renders agent error card with retry button and calls onRetry', () => {

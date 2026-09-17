@@ -11,9 +11,10 @@ interface MessageItemProps {
   message: Message;
   onRetry?: (messageId: string) => void;
   isLoading?: boolean;
+  modelName?: string;
 }
 
-export const MessageItem: React.FC<MessageItemProps> = ({ message, onRetry, isLoading }) => {
+export const MessageItem: React.FC<MessageItemProps> = ({ message, onRetry, isLoading, modelName }) => {
   const isUser = message.role === 'user';
 
   // Check if this message represents an error or contains a service error
@@ -80,7 +81,9 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message, onRetry, isLo
             {displayContent ? (
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{displayContent}</ReactMarkdown>
             ) : (
-              <span style={{ color: 'var(--text-muted)' }}>Thinking...</span>
+              <span className={`${styles.thinkingShimmer} thinking-shimmer`}>
+                Thinking{message.modelName || modelName ? ` with ${message.modelName || modelName}` : ''}...
+              </span>
             )}
           </div>
         )}

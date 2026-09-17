@@ -192,6 +192,7 @@ export const ChatInterface: React.FC = () => {
             agentName={settings.agentName}
             tagline={settings.tagline}
             starterPrompts={settings.starterPrompts}
+            modelName={settings.model}
           />
 
           <InputBar

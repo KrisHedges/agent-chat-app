@@ -33,6 +33,7 @@ export interface Message {
   isError?: boolean;
   canRetry?: boolean;
   errorMessage?: string;
+  modelName?: string;
 }
 
 export type StreamEvent =

@@ -149,8 +149,8 @@ export const InputBar: React.FC<InputBarProps> = ({
         </button>
       </div>
 
-      {/* Real-time Status Indicator */}
-      {(statusMessage || isListening || speechError) && (
+      {/* Real-time Speech / Error Status Indicator (loading spinner and text moved to message bubble) */}
+      {(speechError || isListening || (statusMessage && statusMessage.toLowerCase().includes('error'))) && (
         <div
           data-testid="input-status-bar"
           className={`${styles.statusBar} ${
@@ -162,11 +162,12 @@ export const InputBar: React.FC<InputBarProps> = ({
           {statusMessage?.toLowerCase().includes('error') || speechError ? (
             <AlertCircle size={12} style={{ color: 'var(--accent-red, #C81E1E)' }} />
           ) : (
-            <Loader2 size={12} className="spinner" />
+            <Mic size={12} className="pulse" />
           )}
           <span>
-            {statusMessage ||
-              (speechError ? speechError : 'Listening... Speak into your microphone')}
+            {statusMessage?.toLowerCase().includes('error')
+              ? statusMessage
+              : speechError || 'Listening... Speak into your microphone'}
           </span>
         </div>
       )}

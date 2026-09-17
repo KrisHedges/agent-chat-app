@@ -130,7 +130,7 @@ describe('InputBar Component', () => {
     expect(sendBtn.hasAttribute('disabled')).toBe(true);
   });
 
-  it('renders normal statusMessage and error statusMessage', () => {
+  it('does not render loading statusMessage or spinner below input bar, but displays error statusMessage', () => {
     const { rerender } = render(
       <InputBar
         attachments={[]}
@@ -138,12 +138,15 @@ describe('InputBar Component', () => {
         onRemoveAttachment={vi.fn()}
         onSend={vi.fn()}
         isLoading={true}
-        statusMessage="Invoking calculator..."
+        statusMessage="Thinking with gemini-3.8-flash..."
       />
     );
 
-    expect(screen.getByText('Invoking calculator...')).toBeDefined();
+    // Loading status and spinner are suppressed from below input bar
+    expect(screen.queryByText('Thinking with gemini-3.8-flash...')).toBeNull();
+    expect(screen.queryByTestId('input-status-bar')).toBeNull();
 
+    // Critical errors are rendered
     rerender(
       <InputBar
         attachments={[]}
@@ -156,6 +159,7 @@ describe('InputBar Component', () => {
     );
 
     expect(screen.getByText('Error: network timeout')).toBeDefined();
+    expect(screen.getByTestId('input-status-bar')).toBeDefined();
   });
 
   it('ignores submit when text is empty and attachments are empty or when loading', () => {
