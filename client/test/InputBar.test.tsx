@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { InputBar } from '../src/components/InputBar.js';
 import { Attachment } from '../src/types/index.js';
 
@@ -181,6 +181,159 @@ describe('InputBar Component', () => {
       fireEvent.submit(form);
       expect(handleSend).not.toHaveBeenCalled();
     }
+  });
+
+  describe('Microphone Speech-to-Text Integration', () => {
+    let mockInstance: any;
+
+    class MockSpeechRecognition {
+      continuous = false;
+      interimResults = false;
+      lang = '';
+      onstart: (() => void) | null = null;
+      onresult: ((event: any) => void) | null = null;
+      onerror: ((event: any) => void) | null = null;
+      onend: (() => void) | null = null;
+
+      start = vi.fn();
+      stop = vi.fn();
+      abort = vi.fn();
+
+      constructor() {
+        mockInstance = this;
+      }
+    }
+
+    beforeEach(() => {
+      (window as any).SpeechRecognition = MockSpeechRecognition;
+    });
+
+    afterEach(() => {
+      delete (window as any).SpeechRecognition;
+    });
+
+    it('renders microphone button and starts voice input when clicked', () => {
+      render(
+        <InputBar
+          attachments={[]}
+          onAddAttachments={vi.fn()}
+          onRemoveAttachment={vi.fn()}
+          onSend={vi.fn()}
+          isLoading={false}
+        />
+      );
+
+      const micBtn = screen.getByTestId('mic-button');
+      expect(micBtn.getAttribute('data-listening')).toBe('false');
+
+      fireEvent.click(micBtn);
+      expect(mockInstance.start).toHaveBeenCalled();
+
+      // Trigger start event
+      act(() => {
+        mockInstance.onstart();
+      });
+      expect(micBtn.getAttribute('data-listening')).toBe('true');
+      expect(screen.getByPlaceholderText(/Listening... Speak into your microphone/i)).toBeDefined();
+
+      // Trigger speech result
+      act(() => {
+        mockInstance.onresult({
+          results: [[{ transcript: 'Show me total sales' }]],
+        });
+      });
+
+      const textarea = screen.getByDisplayValue('Show me total sales') as HTMLTextAreaElement;
+      expect(textarea.value).toBe('Show me total sales');
+
+      // Click mic again to stop
+      fireEvent.click(micBtn);
+      expect(mockInstance.stop).toHaveBeenCalled();
+    });
+
+    it('appends speech transcript to existing text in the input box', () => {
+      render(
+        <InputBar
+          attachments={[]}
+          onAddAttachments={vi.fn()}
+          onRemoveAttachment={vi.fn()}
+          onSend={vi.fn()}
+          isLoading={false}
+        />
+      );
+
+      const textarea = screen.getByPlaceholderText(/Ask a question/i);
+      fireEvent.change(textarea, { target: { value: 'Analyze data' } });
+
+      const micBtn = screen.getByTestId('mic-button');
+      fireEvent.click(micBtn);
+
+      act(() => {
+        mockInstance.onstart();
+      });
+      act(() => {
+        mockInstance.onresult({
+          results: [[{ transcript: 'for the last month' }]],
+        });
+      });
+
+      expect((textarea as HTMLTextAreaElement).value).toBe('Analyze data for the last month');
+    });
+
+    it('stops listening when message is sent', () => {
+      const handleSend = vi.fn();
+      render(
+        <InputBar
+          attachments={[]}
+          onAddAttachments={vi.fn()}
+          onRemoveAttachment={vi.fn()}
+          onSend={handleSend}
+          isLoading={false}
+        />
+      );
+
+      const micBtn = screen.getByTestId('mic-button');
+      fireEvent.click(micBtn);
+
+      act(() => {
+        mockInstance.onstart();
+      });
+
+      act(() => {
+        mockInstance.onresult({
+          results: [[{ transcript: 'Query from voice' }]],
+        });
+      });
+
+      const sendBtn = screen.getByTitle(/Send message/i);
+      fireEvent.click(sendBtn);
+
+      expect(handleSend).toHaveBeenCalledWith('Query from voice');
+      expect(mockInstance.stop).toHaveBeenCalled();
+    });
+
+    it('displays speech error in status bar when microphone permission is denied', () => {
+      render(
+        <InputBar
+          attachments={[]}
+          onAddAttachments={vi.fn()}
+          onRemoveAttachment={vi.fn()}
+          onSend={vi.fn()}
+          isLoading={false}
+        />
+      );
+
+      const micBtn = screen.getByTestId('mic-button');
+      fireEvent.click(micBtn);
+
+      act(() => {
+        mockInstance.onerror({ error: 'not-allowed' });
+      });
+
+      expect(
+        screen.getByText('Microphone permission was denied. Please allow microphone access.')
+      ).toBeDefined();
+    });
   });
 });
 

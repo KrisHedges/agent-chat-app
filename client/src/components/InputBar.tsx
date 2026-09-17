@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Attachment } from '../types/index.js';
 import { AttachmentChip } from './AttachmentChip.js';
 import { FileUploadZone } from './FileUploadZone.js';
-import { Send, Loader2, AlertCircle } from 'lucide-react';
+import { Send, Loader2, AlertCircle, Mic, MicOff } from 'lucide-react';
+import { useSpeechToText } from '../hooks/useSpeechToText.js';
 import styles from './InputBar.module.css';
 
 interface InputBarProps {
@@ -24,6 +25,20 @@ export const InputBar: React.FC<InputBarProps> = ({
 }) => {
   const [inputText, setInputText] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const baseTextRef = useRef('');
+
+  const {
+    isSupported: isSpeechSupported,
+    isListening,
+    startListening,
+    stopListening,
+    error: speechError,
+  } = useSpeechToText({
+    onResult: (spokenTranscript) => {
+      const prefix = baseTextRef.current;
+      setInputText(prefix ? `${prefix}${spokenTranscript}` : spokenTranscript);
+    },
+  });
 
   // Auto resize textarea height
   useEffect(() => {
@@ -33,13 +48,27 @@ export const InputBar: React.FC<InputBarProps> = ({
     }
   }, [inputText]);
 
+  const handleMicClick = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      const current = inputText.trim();
+      baseTextRef.current = current ? `${current} ` : '';
+      startListening();
+    }
+  };
+
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
     if ((!inputText.trim() && attachments.length === 0) || isLoading) {
       return;
     }
+    if (isListening) {
+      stopListening();
+    }
     onSend(inputText);
     setInputText('');
+    baseTextRef.current = '';
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
@@ -71,7 +100,9 @@ export const InputBar: React.FC<InputBarProps> = ({
           ref={textareaRef}
           className={`${styles.chatTextarea} chat-textarea`}
           placeholder={
-            attachments.length > 0
+            isListening
+              ? 'Listening... Speak into your microphone...'
+              : attachments.length > 0
               ? 'Ask about the attached file(s) or add your instructions...'
               : 'Ask a question, request data analysis, or drag & drop files here...'
           }
@@ -81,6 +112,31 @@ export const InputBar: React.FC<InputBarProps> = ({
           onKeyDown={handleKeyDown}
           disabled={isLoading}
         />
+
+        <button
+          type="button"
+          data-testid="mic-button"
+          data-listening={isListening}
+          className={`${styles.micBtn} ${isListening ? styles.micBtnActive : ''} btn`}
+          onClick={handleMicClick}
+          disabled={isLoading}
+          title={
+            !isSpeechSupported
+              ? 'Speech recognition is not supported in this browser'
+              : isListening
+              ? 'Listening... Click to stop voice input'
+              : 'Voice input (Speech to text)'
+          }
+          aria-label={
+            !isSpeechSupported
+              ? 'Speech recognition not supported'
+              : isListening
+              ? 'Stop voice input'
+              : 'Start voice input'
+          }
+        >
+          {isListening ? <MicOff size={16} /> : <Mic size={16} />}
+        </button>
 
         <button
           type="button"
@@ -94,18 +150,24 @@ export const InputBar: React.FC<InputBarProps> = ({
       </div>
 
       {/* Real-time Status Indicator */}
-      {statusMessage && (
+      {(statusMessage || isListening || speechError) && (
         <div
+          data-testid="input-status-bar"
           className={`${styles.statusBar} ${
-            statusMessage.toLowerCase().includes('error') ? `${styles.statusBarError} error` : ''
+            statusMessage?.toLowerCase().includes('error') || speechError
+              ? `${styles.statusBarError} error`
+              : ''
           } status-bar`}
         >
-          {statusMessage.toLowerCase().includes('error') ? (
+          {statusMessage?.toLowerCase().includes('error') || speechError ? (
             <AlertCircle size={12} style={{ color: 'var(--accent-red, #C81E1E)' }} />
           ) : (
             <Loader2 size={12} className="spinner" />
           )}
-          <span>{statusMessage}</span>
+          <span>
+            {statusMessage ||
+              (speechError ? speechError : 'Listening... Speak into your microphone')}
+          </span>
         </div>
       )}
     </div>
