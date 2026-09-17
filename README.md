@@ -53,7 +53,7 @@ Think of it as your personal analytical assistant:
 - **User Identity Display**: Shows current user credentials and role in the sidebar footer (`Local Developer` in standalone mode, authenticated user in Looker environment).
 
 ### 4. Interactive Configuration & Resilient Execution
-- **Model Selector & Settings Drawer**: Select verified models on the fly (`gemini-3.8-flash`, `gemini-3.7-flash`, `gemini-3.1-pro`, `gemini-3.0-pro`, `gemini-2.5-flash`, `gemini-2.0-flash`) and customize system instructions per session.
+- **Model Selector & Settings Drawer**: Configure agent display name, welcome tagline, verified Gemini models (`gemini-3.8-flash`, `gemini-3.7-flash`, `gemini-3.1-pro`, `gemini-3.0-pro`, `gemini-2.5-flash`, `gemini-2.0-flash`), and customize system instructions per session.
 - **Collapsible Tool Execution Cards**: View real-time status badges (`Running skill: calculator...`), expandable function input arguments, and formatted JSON output responses.
 - **Smart Error Recovery & Rollback**: Automatic detection of rate limits (429), high-demand spikes (503 Service Unavailable), and network drops, featuring a `[🔄 Try Again]` button that rolls back the failed agent turn cleanly.
 
@@ -115,7 +115,7 @@ The manifest at the project root defines the identity, model, and operational pa
 
 #### Manifest Fields:
 - **`name`**: The display name of your agent, rendered in browser titles and empty state headers.
-- **`tagline`**: Subtitle displayed below the agent title on the welcome screen.
+- **`tagline`**: Subtitle and description displayed below the agent title on the welcome screen. Use this to summarize the agent's specialization, scope, and capabilities for end users (also configurable live in the dev Settings Drawer).
 - **`model`**: Primary Gemini model (e.g. `gemini-3.8-flash`, `gemini-3.7-flash`, `gemini-3.1-pro`).
 - **`temperature`**: Sampling temperature sent to the Gemini API (`0.0` for deterministic math/code, up to `1.0` for creative tasks).
 - **`systemPromptFile`**: Relative path to the markdown file containing the system instructions.
@@ -379,7 +379,7 @@ All commands should be executed from the `agent-chat-app` root directory:
 | **Start Everything** | `npm run dev` | Runs backend (3001) and frontend (8080) concurrently with hot-reloading. |
 | **Start Server Only** | `npm run dev:server` | Starts the Express server using `tsx watch` for auto-restarts on code edits. |
 | **Start Client Only** | `npm run dev:client` | Starts Vite dev server with Hot Module Replacement (HMR). |
-| **Run All Tests** | `npm test` | Executes all 135 unit tests across backend and frontend with zero noise. |
+| **Run All Tests** | `npm test` | Executes all 160 unit tests across backend and frontend with zero noise. |
 | **Run Tests with Debug Logs** | `npm run test:debug` | Runs tests with full application debug logging visible in the console. |
 | **Generate Coverage Report** | `npm run test:coverage` | Prints detailed line/branch/func coverage tables for both workspaces. |
 | **View Visual Coverage** | `open client/coverage/index.html` | Opens the interactive line-by-line HTML coverage report in your browser. |
@@ -390,13 +390,13 @@ All commands should be executed from the `agent-chat-app` root directory:
 
 ## Testing & Code Quality
 
-The project maintains **~97.5% test coverage** with 135 unit tests across 25 suites that execute in **~2.4 seconds**:
+The project maintains **~98% test coverage** with 160 unit tests across 27 suites that execute in **~2.5 seconds**:
 
 ```text
 Test Summary:
-✔ Backend (server):  65 / 65 passed (100% on core services) ~0.7s
-✔ Frontend (client): 70 / 70 passed (100% on all components) ~1.7s
-Total: 135 passed, 0 failed, 0 warnings
+✔ Backend (server):  71 / 71 passed (100% on core services) ~0.5s
+✔ Frontend (client): 89 / 89 passed (100% on all components) ~2.0s
+Total: 160 passed, 0 failed, 0 warnings
 ```
 
 ### Coverage by Component & Module
