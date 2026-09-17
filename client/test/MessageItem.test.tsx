@@ -167,5 +167,19 @@ describe('MessageItem Component', () => {
     expect(screen.getByText('skill: data_inspector')).toBeDefined();
     expect(screen.getByText('Executed')).toBeDefined();
   });
+
+  it('renders gemini icon avatar for agent messages', () => {
+    const agentMsg: Message = {
+      id: 'm_agent',
+      role: 'model',
+      content: 'Hello! How can I help you today?',
+      timestamp: Date.now(),
+    };
+
+    render(<MessageItem message={agentMsg} />);
+    const geminiImg = screen.getByAltText('Gemini');
+    expect(geminiImg).toBeDefined();
+    expect(geminiImg.getAttribute('src')).toBe('/gemini.svg');
+  });
 });
 

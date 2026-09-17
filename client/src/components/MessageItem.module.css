@@ -24,8 +24,8 @@
 }
 
 .messageAvatarAgent {
-  background: linear-gradient(135deg, var(--hmh-dark-blue), var(--hmh-lightest-blue));
-  color: #ffffff;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
 }
 
 .messageAvatarUser {

@@ -4,7 +4,7 @@ import remarkGfm from 'remark-gfm';
 import { Message } from '../types/index.js';
 import { AttachmentChip } from './AttachmentChip.js';
 import { ToolExecutionCard } from './ToolExecutionCard.js';
-import { Bot, User, AlertTriangle, RotateCcw } from 'lucide-react';
+import { User, AlertTriangle, RotateCcw } from 'lucide-react';
 import styles from './MessageItem.module.css';
 
 interface MessageItemProps {
@@ -57,7 +57,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message, onRetry, isLo
           isUser ? `${styles.messageAvatarUser} user` : `${styles.messageAvatarAgent} agent`
         } message-avatar`}
       >
-        {isUser ? <User size={16} /> : <Bot size={16} />}
+        {isUser ? <User size={16} /> : <img src="/gemini.svg" alt="Gemini" width={18} height={18} style={{ display: 'block' }} />}
       </div>
 
       <div className={`${styles.messageContentWrapper} message-content-wrapper`}>
