@@ -63,11 +63,21 @@ describe('MessageList Component', () => {
     expect(screen.getByText('Custom Analytical Agent')).toBeDefined();
   });
 
-  it('renders starter prompt chips and triggers onPromptClick when clicked', () => {
+  it('renders custom starterPrompts as feature cards and triggers onPromptClick when clicked', () => {
     const handlePromptClick = vi.fn();
     const starterPrompts = [
-      'Analyze quarterly revenue',
-      'Find churned accounts',
+      {
+        title: 'Custom Revenue Analysis',
+        description: 'Deep dive into revenue trends',
+        prompt: 'Analyze quarterly revenue trends in detail',
+        icon: 'data',
+      },
+      {
+        title: 'Retention Check',
+        description: 'Inspect churned accounts',
+        prompt: 'Find churned accounts for last month',
+        icon: 'skills',
+      },
     ];
 
     render(
@@ -78,11 +88,12 @@ describe('MessageList Component', () => {
       />
     );
 
-    expect(screen.getByText('Suggested starters:')).toBeDefined();
-    expect(screen.getByText('Analyze quarterly revenue')).toBeDefined();
-    expect(screen.getByText('Find churned accounts')).toBeDefined();
+    expect(screen.getByText('Custom Revenue Analysis')).toBeDefined();
+    expect(screen.getByText('Deep dive into revenue trends')).toBeDefined();
+    expect(screen.getByText('Retention Check')).toBeDefined();
+    expect(screen.getByText('Inspect churned accounts')).toBeDefined();
 
-    fireEvent.click(screen.getByText('Analyze quarterly revenue'));
-    expect(handlePromptClick).toHaveBeenCalledWith('Analyze quarterly revenue');
+    fireEvent.click(screen.getByText('Custom Revenue Analysis'));
+    expect(handlePromptClick).toHaveBeenCalledWith('Analyze quarterly revenue trends in detail');
   });
 });

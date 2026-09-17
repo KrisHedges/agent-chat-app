@@ -3,13 +3,20 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { logger } from '../utils/logger.js';
 
+export interface StarterPrompt {
+  title: string;
+  description: string;
+  prompt: string;
+  icon?: string;
+}
+
 export interface AgentConfig {
   name: string;
   tagline?: string;
   model: string;
   temperature?: number;
   systemPromptFile: string;
-  starterPrompts?: string[];
+  starterPrompts?: Array<StarterPrompt | string>;
   enabledSkills?: string[];
   lockdown?: {
     disableClientOverrides?: boolean;
@@ -17,18 +24,42 @@ export interface AgentConfig {
   };
 }
 
+export const DEFAULT_STARTER_PROMPTS: StarterPrompt[] = [
+  {
+    title: 'Data Profiling',
+    description: 'Profile JSON datasets, columns, null rates, and summary statistics.',
+    prompt:
+      'Can you inspect this sample JSON data: [{"order_id": 101, "revenue": 240.5, "status": "completed"}, {"order_id": 102, "revenue": 180.0, "status": "pending"}]',
+    icon: 'data',
+  },
+  {
+    title: 'Skills & Tools',
+    description: 'Discover registered skills and functions available to the agent.',
+    prompt: 'What skills and tools do you currently have registered?',
+    icon: 'skills',
+  },
+  {
+    title: 'Safe Calculations',
+    description: 'Execute verified math expressions via the calculator skill.',
+    prompt:
+      'Calculate the compound annual growth rate if initial is 120000 and final is 340000 over 5 years.',
+    icon: 'calculator',
+  },
+  {
+    title: 'Looker Integration',
+    description: 'Learn how to connect this agent to Looker extensions and iframe URLs.',
+    prompt: 'How can I embed this agent interface inside a Looker dashboard or extension?',
+    icon: 'looker',
+  },
+];
+
 export const DEFAULT_AGENT_CONFIG: AgentConfig = {
   name: 'Gemini Chat Agent Starter Kit',
   tagline: 'Enterprise AI Assistant powered by Google Gemini',
   model: 'gemini-3.8-flash',
   temperature: 0.4,
   systemPromptFile: 'agent.prompt.md',
-  starterPrompts: [
-    'Analyze our quarterly regional sales trends',
-    'Check dataset schema and find outliers',
-    'How can I calculate rolling 7-day average revenue?',
-    'Summarize key metrics from attached report',
-  ],
+  starterPrompts: DEFAULT_STARTER_PROMPTS,
   enabledSkills: ['calculator', 'data_inspector'],
   lockdown: {
     disableClientOverrides: false,

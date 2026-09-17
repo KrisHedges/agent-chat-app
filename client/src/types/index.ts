@@ -43,12 +43,19 @@ export type StreamEvent =
   | { type: 'error'; error: string }
   | { type: 'done'; usage?: { promptTokens?: number; candidatesTokens?: number } };
 
+export interface StarterPrompt {
+  title: string;
+  description: string;
+  prompt: string;
+  icon?: string;
+}
+
 export interface AgentSettings {
   agentName?: string;
   tagline?: string;
   model: string;
   systemPrompt: string;
-  starterPrompts?: string[];
+  starterPrompts?: Array<StarterPrompt | string>;
   systemPromptFile?: string;
   isLocked?: boolean;
   hideSettings?: boolean;
