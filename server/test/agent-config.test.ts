@@ -72,9 +72,72 @@ describe('Agent Manifest & File Configuration Tests', () => {
     const data = await res.json();
     assert.strictEqual(typeof data.name, 'string');
     assert.strictEqual(typeof data.model, 'string');
+    assert.strictEqual(typeof data.tagline, 'string');
+    assert.ok(data.tagline.includes('starter kit') || data.tagline.length > 0);
     assert.ok(Array.isArray(data.starterPrompts));
     assert.strictEqual(typeof data.isLocked, 'boolean');
     assert.strictEqual(typeof data.hideSettings, 'boolean');
+  });
+
+  it('isLockdownActive should return true in production or when disableClientOverrides is set', () => {
+    const origEnv = process.env.NODE_ENV;
+    try {
+      process.env.NODE_ENV = 'production';
+      assert.strictEqual(isLockdownActive(), true, 'should be active when NODE_ENV is production');
+
+      process.env.NODE_ENV = 'development';
+      // In dev, matches agent.config.json disableClientOverrides
+      const config = loadAgentConfig();
+      assert.strictEqual(isLockdownActive(), !!config.lockdown?.disableClientOverrides);
+    } finally {
+      process.env.NODE_ENV = origEnv;
+    }
+  });
+
+  it('orchestrator in lockdown should ignore client-supplied customPrompt and modelName overrides', async () => {
+    const origEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production';
+
+    let capturedConfig: any = null;
+    let capturedModel: string | null = null;
+
+    const mockAi = {
+      models: {
+        generateContentStream: async (args: any) => {
+          capturedConfig = args;
+          capturedModel = args.model;
+          return (async function* () {
+            yield { text: 'Lockdown response' };
+          })();
+        },
+      },
+    };
+
+    try {
+      const orchestrator = new AgentOrchestrator({ geminiClient: mockAi });
+      const events: any[] = [];
+
+      await orchestrator.streamTurn(
+        [{ id: '1', role: 'user', content: 'Testing lockdown' }],
+        (event) => events.push(event),
+        'TAMPERED_CLIENT_SYSTEM_PROMPT',
+        'tampered-client-model'
+      );
+
+      assert.ok(capturedConfig, 'generateContentStream should be called');
+      assert.strictEqual(
+        capturedConfig.config.systemInstruction.includes('TAMPERED_CLIENT_SYSTEM_PROMPT'),
+        false,
+        'client-supplied prompt override must be ignored in lockdown'
+      );
+      assert.notStrictEqual(
+        capturedModel,
+        'tampered-client-model',
+        'client-supplied model override must be ignored in lockdown'
+      );
+    } finally {
+      process.env.NODE_ENV = origEnv;
+    }
   });
 
   it('orchestrator should respect host contextData and inject it into system instruction', async () => {

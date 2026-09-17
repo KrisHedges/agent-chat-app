@@ -379,7 +379,7 @@ All commands should be executed from the `agent-chat-app` root directory:
 | **Start Everything** | `npm run dev` | Runs backend (3001) and frontend (8080) concurrently with hot-reloading. |
 | **Start Server Only** | `npm run dev:server` | Starts the Express server using `tsx watch` for auto-restarts on code edits. |
 | **Start Client Only** | `npm run dev:client` | Starts Vite dev server with Hot Module Replacement (HMR). |
-| **Run All Tests** | `npm test` | Executes all 160 unit tests across backend and frontend with zero noise. |
+| **Run All Tests** | `npm test` | Executes all 165 unit tests across backend and frontend with zero noise. |
 | **Run Tests with Debug Logs** | `npm run test:debug` | Runs tests with full application debug logging visible in the console. |
 | **Generate Coverage Report** | `npm run test:coverage` | Prints detailed line/branch/func coverage tables for both workspaces. |
 | **View Visual Coverage** | `open client/coverage/index.html` | Opens the interactive line-by-line HTML coverage report in your browser. |
@@ -390,13 +390,13 @@ All commands should be executed from the `agent-chat-app` root directory:
 
 ## Testing & Code Quality
 
-The project maintains **~98% test coverage** with 160 unit tests across 27 suites that execute in **~2.5 seconds**:
+The project maintains **~98.5% test coverage** with 165 unit tests across 27 suites that execute in **~2.5 seconds**:
 
 ```text
 Test Summary:
-✔ Backend (server):  71 / 71 passed (100% on core services) ~0.5s
-✔ Frontend (client): 89 / 89 passed (100% on all components) ~2.0s
-Total: 160 passed, 0 failed, 0 warnings
+✔ Backend (server):  73 / 73 passed (100% on core services) ~0.5s
+✔ Frontend (client): 92 / 92 passed (100% on all components) ~2.0s
+Total: 165 passed, 0 failed, 0 warnings
 ```
 
 ### Coverage by Component & Module

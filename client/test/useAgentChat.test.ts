@@ -379,5 +379,48 @@ describe('useAgentChat Hook', () => {
     expect(consoleError).toHaveBeenCalled();
     consoleError.mockRestore();
   });
+
+  it('loads agent manifest config on mount and populates tagline, name, model, and lockdown status', async () => {
+    const mockAgentConfig = {
+      name: 'Manifest Custom Advisor',
+      tagline: 'Custom analytical advisor tagline from manifest',
+      model: 'gemini-3.8-flash',
+      isLocked: true,
+      hideSettings: true,
+      starterPrompts: [
+        { title: 'Card 1', description: 'Desc 1', prompt: 'Prompt 1', icon: 'data' },
+      ],
+    };
+
+    global.fetch = vi.fn().mockImplementation(async (url: string) => {
+      if (url === '/api/agent/config') {
+        return {
+          ok: true,
+          json: async () => mockAgentConfig,
+        };
+      }
+      if (url.includes('/api/conversations')) {
+        return {
+          ok: true,
+          json: async () => ({ conversations: [] }),
+        };
+      }
+      return { ok: true, json: async () => ({}) };
+    });
+
+    const { result } = renderHook(() => useAgentChat('user_1'));
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(result.current.settings.agentName).toBe('Manifest Custom Advisor');
+    expect(result.current.settings.tagline).toBe('Custom analytical advisor tagline from manifest');
+    expect(result.current.settings.model).toBe('gemini-3.8-flash');
+    expect(result.current.settings.isLocked).toBe(true);
+    expect(result.current.settings.hideSettings).toBe(true);
+    expect(result.current.settings.starterPrompts).toEqual(mockAgentConfig.starterPrompts);
+  });
 });
+
 

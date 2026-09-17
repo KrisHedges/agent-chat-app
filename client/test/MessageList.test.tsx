@@ -1,5 +1,5 @@
 import React from 'react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MessageList } from '../src/components/MessageList.js';
 import { Message } from '../src/types/index.js';
@@ -96,4 +96,35 @@ describe('MessageList Component', () => {
     fireEvent.click(screen.getByText('Custom Revenue Analysis'));
     expect(handlePromptClick).toHaveBeenCalledWith('Analyze quarterly revenue trends in detail');
   });
+
+  it('renders custom tagline when provided, and falls back to default starter kit tagline when omitted', () => {
+    const { rerender } = render(
+      <MessageList messages={[]} onPromptClick={vi.fn()} tagline="Custom Enterprise AI Tagline" />
+    );
+    expect(screen.getByText('Custom Enterprise AI Tagline')).toBeDefined();
+
+    rerender(<MessageList messages={[]} onPromptClick={vi.fn()} tagline={undefined} />);
+    expect(
+      screen.getByText(/A modular starter kit for building custom Gemini agents/i)
+    ).toBeDefined();
+  });
+
+  it('handles string array starter prompts and default icon fallback', () => {
+    const handlePromptClick = vi.fn();
+    render(
+      <MessageList
+        messages={[]}
+        onPromptClick={handlePromptClick}
+        starterPrompts={['Simple prompt 1', { title: 'Special', description: 'Desc', prompt: 'Prompt 2', icon: 'unknown_icon' as any }]}
+      />
+    );
+
+    expect(screen.getByText('Simple prompt 1')).toBeDefined();
+    expect(screen.getByText('Click to ask this prompt')).toBeDefined();
+    expect(screen.getByText('Special')).toBeDefined();
+
+    fireEvent.click(screen.getByText('Simple prompt 1'));
+    expect(handlePromptClick).toHaveBeenCalledWith('Simple prompt 1');
+  });
 });
+
