@@ -52,7 +52,7 @@ describe('SettingsDrawer Component', () => {
     expect(handleClose).toHaveBeenCalledTimes(2);
   });
 
-  it('updates model when select dropdown changes', () => {
+  it('updates model when select dropdown changes to verified models', () => {
     const handleUpdate = vi.fn();
     render(
       <SettingsDrawer
@@ -64,19 +64,35 @@ describe('SettingsDrawer Component', () => {
     );
 
     const select = screen.getByRole('combobox') as HTMLSelectElement;
-    fireEvent.change(select, { target: { value: 'gemini-3.8-pro' } });
+
+    // Change to gemini-3.7-flash
+    fireEvent.change(select, { target: { value: 'gemini-3.7-flash' } });
     expect(handleUpdate).toHaveBeenCalledWith({
       ...initialSettings,
-      model: 'gemini-3.8-pro',
+      model: 'gemini-3.7-flash',
     });
 
-    // Selecting 'custom' does not call onUpdateSettings directly
+    // Change to gemini-3.1-pro
     handleUpdate.mockClear();
-    fireEvent.change(select, { target: { value: 'custom' } });
-    expect(handleUpdate).not.toHaveBeenCalled();
+    fireEvent.change(select, { target: { value: 'gemini-3.1-pro' } });
+    expect(handleUpdate).toHaveBeenCalledWith({
+      ...initialSettings,
+      model: 'gemini-3.1-pro',
+    });
+
+    // Change to gemini-2.0-flash
+    handleUpdate.mockClear();
+    fireEvent.change(select, { target: { value: 'gemini-2.0-flash' } });
+    expect(handleUpdate).toHaveBeenCalledWith({
+      ...initialSettings,
+      model: 'gemini-2.0-flash',
+    });
+
+    // Verify there is no text input to type arbitrary model names
+    expect(screen.queryByPlaceholderText(/custom model name/i)).toBeNull();
   });
 
-  it('updates model when typing custom model name and updates system instruction', () => {
+  it('updates system instruction via prompt textarea', () => {
     const handleUpdate = vi.fn();
     render(
       <SettingsDrawer
@@ -87,13 +103,6 @@ describe('SettingsDrawer Component', () => {
       />
     );
 
-    const modelInput = screen.getByPlaceholderText(/Or type custom model name/i);
-    fireEvent.change(modelInput, { target: { value: 'gemini-custom-exp' } });
-    expect(handleUpdate).toHaveBeenCalledWith({
-      ...initialSettings,
-      model: 'gemini-custom-exp',
-    });
-
     const promptTextarea = screen.getByPlaceholderText(/Leave empty to use default/i);
     fireEvent.change(promptTextarea, { target: { value: 'New system instruction' } });
     expect(handleUpdate).toHaveBeenCalledWith({
@@ -102,7 +111,7 @@ describe('SettingsDrawer Component', () => {
     });
   });
 
-  it('falls back to custom option in select if model is unrecognized', () => {
+  it('falls back to gemini-3.8-flash in select if model is unrecognized', () => {
     render(
       <SettingsDrawer
         isOpen={true}
@@ -113,7 +122,7 @@ describe('SettingsDrawer Component', () => {
     );
 
     const select = screen.getByRole('combobox') as HTMLSelectElement;
-    expect(select.value).toBe('custom');
+    expect(select.value).toBe('gemini-3.8-flash');
   });
 
   it('updates agentName when typing custom agent display name', () => {

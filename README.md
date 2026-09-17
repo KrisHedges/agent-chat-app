@@ -52,7 +52,7 @@ Think of it as your personal analytical assistant:
 - **Dev Substitute User Switcher**: In standalone mode, switch between preset developer personas (`Alice Henderson`, `Bob Martinez`, `Carol Danvers`) to test multi-tenant permission boundaries and conversation isolation locally.
 
 ### 4. Interactive Configuration & Resilient Execution
-- **Model Selector & Settings Drawer**: Switch models on the fly (`gemini-3.8-flash`, `gemini-3.8-pro`, `gemini-2.5-flash`, `gemini-2.5-pro`, or custom model IDs) and customize system instructions per session.
+- **Model Selector & Settings Drawer**: Select verified models on the fly (`gemini-3.8-flash`, `gemini-3.7-flash`, `gemini-3.1-pro`, `gemini-3.0-pro`, `gemini-2.5-flash`, `gemini-2.0-flash`) and customize system instructions per session.
 - **Collapsible Tool Execution Cards**: View real-time status badges (`Running skill: calculator...`), expandable function input arguments, and formatted JSON output responses.
 - **Smart Error Recovery & Rollback**: Automatic detection of rate limits (429), high-demand spikes (503 Service Unavailable), and network drops, featuring a `[🔄 Try Again]` button that rolls back the failed agent turn cleanly.
 

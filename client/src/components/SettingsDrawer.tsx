@@ -68,49 +68,38 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
             value={
               [
                 'gemini-3.8-flash',
-                'gemini-3.8-pro',
+                'gemini-3.7-flash',
                 'gemini-3.5-flash',
-                'gemini-3.5-pro',
+                'gemini-3.1-pro',
                 'gemini-3.0-flash',
                 'gemini-3.0-pro',
                 'gemini-2.5-flash',
                 'gemini-2.5-pro',
+                'gemini-2.0-flash',
               ].includes(settings.model)
                 ? settings.model
-                : 'custom'
+                : 'gemini-3.8-flash'
             }
             onChange={(e) => {
-              if (e.target.value !== 'custom') {
-                onUpdateSettings({ ...settings, model: e.target.value });
-              }
+              onUpdateSettings({ ...settings, model: e.target.value });
             }}
           >
             <optgroup label="Gemini 3 Series (Latest)">
               <option value="gemini-3.8-flash">Gemini 3.8 Flash (Recommended - Ultra-fast Multimodal)</option>
-              <option value="gemini-3.8-pro">Gemini 3.8 Pro (Deep Reasoning & Analysis)</option>
+              <option value="gemini-3.7-flash">Gemini 3.7 Flash (Agentic Workhorse & Coding)</option>
               <option value="gemini-3.5-flash">Gemini 3.5 Flash</option>
-              <option value="gemini-3.5-pro">Gemini 3.5 Pro</option>
+              <option value="gemini-3.1-pro">Gemini 3.1 Pro (Deep Reasoning & Analysis)</option>
               <option value="gemini-3.0-flash">Gemini 3.0 Flash</option>
               <option value="gemini-3.0-pro">Gemini 3.0 Pro</option>
             </optgroup>
-            <optgroup label="Gemini 2.5 Series">
+            <optgroup label="Gemini 2.5 & 2.0 Series">
               <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
               <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+              <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
             </optgroup>
-            <option value="custom">Custom / Preview Model ID...</option>
           </select>
-
-          {/* If custom or user types custom model name */}
-          <input
-            type="text"
-            className={`${styles.formInput} form-input`}
-            style={{ marginTop: '4px' }}
-            placeholder="Or type custom model name (e.g. gemini-3.8-flash)"
-            value={settings.model}
-            onChange={(e) => onUpdateSettings({ ...settings, model: e.target.value })}
-          />
           <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-            Active model sent to @google/genai SDK.
+            Verified model sent to @google/genai SDK.
           </span>
         </div>
 
