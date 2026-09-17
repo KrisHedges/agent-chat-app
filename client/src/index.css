@@ -74,6 +74,22 @@ html, body, #root {
   cursor: not-allowed;
 }
 
+.btn-danger {
+  background: var(--accent-red);
+  color: #ffffff;
+  border-color: var(--accent-red);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #a91717;
+  border-color: #a91717;
+}
+
+.btn-danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Global Animation Utility */
 .spinner {
   animation: spin 1s linear infinite;

@@ -82,15 +82,11 @@ describe('ConversationSidebar Component', () => {
     expect(screen.getByText('Messages are encrypted at rest.')).toBeDefined();
   });
 
-  it('renders grouped conversations, handles clicks and delete confirmation', () => {
+  it('renders grouped conversations, handles clicks and delete confirmation via modal', () => {
     const handleSelect = vi.fn();
     const handleNewChat = vi.fn();
     const handleToggle = vi.fn();
     const handleDelete = vi.fn();
-
-    // Mock confirm
-    const confirmSpy = vi.spyOn(window, 'confirm');
-    confirmSpy.mockReturnValue(true);
 
     render(
       <StandaloneProvider>
@@ -127,18 +123,23 @@ describe('ConversationSidebar Component', () => {
     fireEvent.click(screen.getByTitle('Collapse sidebar'));
     expect(handleToggle).toHaveBeenCalled();
 
-    // Delete conversation
+    // Trigger delete conversation - opens confirm modal
     const deleteButtons = screen.getAllByTitle('Delete conversation');
     fireEvent.click(deleteButtons[0]);
-    expect(confirmSpy).toHaveBeenCalled();
-    expect(handleDelete).toHaveBeenCalledWith('c_today');
 
-    confirmSpy.mockRestore();
+    // Verify modal is open and displays conversation details
+    expect(screen.getByTestId('delete-conversation-modal-panel')).toBeDefined();
+    expect(screen.getByText('Delete Conversation')).toBeDefined();
+    expect(screen.getByText(/Are you sure you want to delete "Today Conversation"/)).toBeDefined();
+
+    // Confirm deletion
+    const confirmBtn = screen.getByTestId('delete-conversation-modal-confirm-btn');
+    fireEvent.click(confirmBtn);
+    expect(handleDelete).toHaveBeenCalledWith('c_today');
   });
 
-  it('does not delete conversation if user cancels confirmation', () => {
+  it('does not delete conversation if user cancels modal confirmation', () => {
     const handleDelete = vi.fn();
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
 
     render(
       <StandaloneProvider>
@@ -157,10 +158,16 @@ describe('ConversationSidebar Component', () => {
 
     const deleteButtons = screen.getAllByTitle('Delete conversation');
     fireEvent.click(deleteButtons[0]);
-    expect(confirmSpy).toHaveBeenCalled();
-    expect(handleDelete).not.toHaveBeenCalled();
 
-    confirmSpy.mockRestore();
+    // Verify modal opened
+    expect(screen.getByTestId('delete-conversation-modal-panel')).toBeDefined();
+
+    // Click cancel button
+    const cancelBtn = screen.getByTestId('delete-conversation-modal-cancel-btn');
+    fireEvent.click(cancelBtn);
+
+    expect(handleDelete).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('delete-conversation-modal-panel')).toBeNull();
   });
 
   it('renders user profile in sidebar footer without substitute dropdown', () => {

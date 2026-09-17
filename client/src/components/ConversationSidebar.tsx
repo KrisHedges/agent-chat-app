@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ConversationSummary } from '../types/index.js';
 import { useLookerHost } from '../looker/StandaloneProvider.js';
 import { MessageSquare, Trash2, Menu, Shield } from 'lucide-react';
+import { ConfirmModal } from './ConfirmModal.js';
 import styles from './ConversationSidebar.module.css';
 
 interface ConversationSidebarProps {
@@ -26,6 +27,9 @@ export const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
   isLoading,
 }) => {
   const { user, availableUsers, switchUser, isLooker } = useLookerHost();
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+
+  const pendingConversation = conversations.find((c) => c.id === pendingDeleteId);
 
   // Helper to group conversations by relative date
   const groupConversations = () => {
@@ -58,7 +62,8 @@ export const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
   const grouped = groupConversations();
 
   return (
-    <aside
+    <>
+      <aside
       data-testid="sidebar-container"
       data-open={isOpen}
       aria-hidden={!isOpen}
@@ -118,9 +123,7 @@ export const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
                           className={`${styles.sidebarItemDelete} sidebar-item-delete`}
                           onClick={(e) => {
                             e.stopPropagation();
-                            if (window.confirm('Delete this encrypted conversation?')) {
-                              onDelete(conv.id);
-                            }
+                            setPendingDeleteId(conv.id);
                           }}
                           title="Delete conversation"
                         >
@@ -166,5 +169,28 @@ export const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
       </div>
     </div>
   </aside>
+
+  {/* Delete Confirmation Modal Dialog */}
+  <ConfirmModal
+    isOpen={pendingDeleteId !== null}
+    title="Delete Conversation"
+    message={
+      pendingConversation
+        ? `Are you sure you want to delete "${pendingConversation.title}"? This conversation and its encrypted history cannot be recovered.`
+        : 'Are you sure you want to delete this encrypted conversation? This action cannot be undone.'
+    }
+    confirmText="Delete"
+    cancelText="Cancel"
+    variant="danger"
+    testId="delete-conversation-modal"
+    onConfirm={() => {
+      if (pendingDeleteId) {
+        onDelete(pendingDeleteId);
+        setPendingDeleteId(null);
+      }
+    }}
+    onCancel={() => setPendingDeleteId(null)}
+  />
+</>
 );
 };
