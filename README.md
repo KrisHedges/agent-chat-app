@@ -42,6 +42,7 @@ Think of it as your personal analytical assistant:
 ### 2. Built-in Agent Skills (Tool Calling)
 - **`calculator`**: Deterministically evaluates arithmetic, statistical expressions, and `Math` functions, guaranteeing accurate calculations without LLM math hallucinations.
 - **`data_inspector`**: Deeply analyzes JSON/CSV datasets, inferring column data types (`number`, `boolean`, `datetime`, `string`, `object`), null counts, unique frequencies, and numerical ranges (min, max, average).
+- **`prompt_architect`**: Scaffolds and audits agent system prompts and manifest configurations. Generates production-ready markdown blueprints (`agent.prompt.md`), calibrated manifests (`agent.config.json`), rubric-based audits of existing prompts against Gemini best practices, and registered tool guidelines.
 - **Gemini 3.x Thought Signature Preservation**: Fully complies with Google GenAI's latest function-calling protocol by preserving `thought_signature` parts across multi-turn reasoning loops.
 - **Extensible Tool Registry**: Add custom enterprise tools in `server/src/agent/skills/` by implementing the typed `ToolDefinition` interface.
 
@@ -100,11 +101,24 @@ The manifest at the project root defines the identity, model, and operational pa
       "description": "Learn how to connect this agent to Looker extensions and iframe URLs.",
       "prompt": "How can I embed this agent interface inside a Looker dashboard or extension?",
       "icon": "looker"
+    },
+    {
+      "title": "Prompt Architect",
+      "description": "Architect a production system prompt, guardrails, and manifest for your agent.",
+      "prompt": "Help me architect a production system prompt and configuration for my custom agent. What questions do you need answered to build the blueprint?",
+      "icon": "sparkles"
+    },
+    {
+      "title": "Prompt Audit",
+      "description": "Evaluate and upgrade an existing agent prompt against Gemini best practices.",
+      "prompt": "Can you audit and improve an existing system prompt for me? Here is my current draft: 'You are a helpful domain assistant. Answer questions accurately and be nice.'",
+      "icon": "sparkles"
     }
   ],
   "enabledSkills": [
     "calculator",
-    "data_inspector"
+    "data_inspector",
+    "prompt_architect"
   ],
   "lockdown": {
     "disableClientOverrides": false,
@@ -261,7 +275,8 @@ agent-chat-app/
 │   │   │   └── skills/
 │   │   │       ├── registry.ts      # Tool registry mapping to Gemini functionDeclarations
 │   │   │       ├── calculator.ts    # Built-in tool: safe math evaluation
-│   │   │       └── data-inspector.ts# Built-in tool: profiles & inspects JSON/CSV schemas
+│   │   │       ├── data-inspector.ts# Built-in tool: profiles & inspects JSON/CSV schemas
+│   │   │       └── prompt-architect.ts # Built-in tool: scaffolds & audits custom agent prompts
 │   │   ├── routes/
 │   │   │   ├── agent-config.ts      # GET /api/agent/config manifest endpoint
 │   │   │   ├── chat.ts              # SSE streaming endpoint (POST /api/chat/stream)
@@ -379,7 +394,7 @@ All commands should be executed from the `agent-chat-app` root directory:
 | **Start Everything** | `npm run dev` | Runs backend (3001) and frontend (8080) concurrently with hot-reloading. |
 | **Start Server Only** | `npm run dev:server` | Starts the Express server using `tsx watch` for auto-restarts on code edits. |
 | **Start Client Only** | `npm run dev:client` | Starts Vite dev server with Hot Module Replacement (HMR). |
-| **Run All Tests** | `npm test` | Executes all 165 unit tests across backend and frontend with zero noise. |
+| **Run All Tests** | `npm test` | Executes all 168 unit tests across backend and frontend with zero noise. |
 | **Run Tests with Debug Logs** | `npm run test:debug` | Runs tests with full application debug logging visible in the console. |
 | **Generate Coverage Report** | `npm run test:coverage` | Prints detailed line/branch/func coverage tables for both workspaces. |
 | **View Visual Coverage** | `open client/coverage/index.html` | Opens the interactive line-by-line HTML coverage report in your browser. |
@@ -390,13 +405,13 @@ All commands should be executed from the `agent-chat-app` root directory:
 
 ## Testing & Code Quality
 
-The project maintains **~98.5% test coverage** with 165 unit tests across 27 suites that execute in **~2.5 seconds**:
+The project maintains **~98.5% test coverage** with 168 unit tests across 28 suites that execute in **~2.5 seconds**:
 
 ```text
 Test Summary:
-✔ Backend (server):  73 / 73 passed (100% on core services) ~0.5s
+✔ Backend (server):  76 / 76 passed (100% on core services) ~0.5s
 ✔ Frontend (client): 92 / 92 passed (100% on all components) ~2.0s
-Total: 165 passed, 0 failed, 0 warnings
+Total: 168 passed, 0 failed, 0 warnings
 ```
 
 ### Coverage by Component & Module

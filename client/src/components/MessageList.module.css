@@ -9,7 +9,7 @@
 
 .emptyChat {
   margin: auto;
-  max-width: 540px;
+  max-width: 620px;
   text-align: center;
   padding: 40px 20px;
 }
@@ -45,6 +45,12 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
   text-align: left;
+}
+
+@media (max-width: 540px) {
+  .featureCards {
+    grid-template-columns: 1fr;
+  }
 }
 
 .featureCard {

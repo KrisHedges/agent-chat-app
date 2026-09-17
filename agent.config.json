@@ -28,11 +28,24 @@
       "description": "Learn how to connect this agent to Looker extensions and iframe URLs.",
       "prompt": "How can I embed this agent interface inside a Looker dashboard or extension?",
       "icon": "looker"
+    },
+    {
+      "title": "Prompt Architect",
+      "description": "Architect a production system prompt, guardrails, and manifest for your agent.",
+      "prompt": "Help me architect a production system prompt and configuration for my custom agent. What questions do you need answered to build the blueprint?",
+      "icon": "sparkles"
+    },
+    {
+      "title": "Prompt Audit",
+      "description": "Evaluate and upgrade an existing agent prompt against Gemini best practices.",
+      "prompt": "Can you audit and improve an existing system prompt for me? Here is my current draft: 'You are a helpful domain assistant. Answer questions accurately and be nice.'",
+      "icon": "sparkles"
     }
   ],
   "enabledSkills": [
     "calculator",
-    "data_inspector"
+    "data_inspector",
+    "prompt_architect"
   ],
   "lockdown": {
     "disableClientOverrides": false,

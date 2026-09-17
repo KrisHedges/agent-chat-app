@@ -141,6 +141,81 @@ describe('Built-in Skills Tests', () => {
     });
   });
 
+  describe('prompt_architect tool', () => {
+    it('should generate full agent blueprint with agentPromptMd and agentConfigSnippet', async () => {
+      const { promptArchitectTool } = await import('../src/agent/skills/prompt-architect.js');
+      const result = await promptArchitectTool.execute({
+        action: 'blueprint',
+        agentName: 'Supply Chain Copilot',
+        domain: 'Supply Chain Logistics',
+        mission: 'Optimize warehouse stock levels and predict delivery delays',
+        targetAudience: 'Logistics Coordinators',
+        enabledTools: ['calculator', 'data_inspector'],
+        guardrails: ['Never approve orders over $50,000 without manager confirmation.'],
+        tone: 'Precise, urgent when delays detected, highly structured',
+      });
+
+      assert.strictEqual(result.action, 'blueprint');
+      assert.ok(result.agentPromptMd, 'agentPromptMd should be present');
+      assert.ok(result.agentPromptMd.includes('Supply Chain Copilot'));
+      assert.ok(result.agentPromptMd.includes('Supply Chain Logistics'));
+      assert.ok(result.agentPromptMd.includes('Never approve orders over $50,000'));
+      assert.ok(result.agentPromptMd.includes('calculator'));
+      assert.ok(result.agentPromptMd.includes('data_inspector'));
+
+      assert.ok(result.agentConfigSnippet, 'agentConfigSnippet should be present');
+      assert.strictEqual(result.agentConfigSnippet?.name, 'Supply Chain Copilot');
+      assert.strictEqual(result.agentConfigSnippet?.model, 'gemini-3.8-flash');
+      assert.strictEqual(result.agentConfigSnippet?.temperature, 0.2);
+      assert.ok(Array.isArray(result.agentConfigSnippet?.starterPrompts));
+      assert.strictEqual(result.agentConfigSnippet?.starterPrompts.length, 3);
+    });
+
+    it('should introspect registered tools and generate prompt guidelines', async () => {
+      const { promptArchitectTool } = await import('../src/agent/skills/prompt-architect.js');
+      const result = await promptArchitectTool.execute({ action: 'introspect' });
+
+      assert.strictEqual(result.action, 'introspect');
+      assert.ok(Array.isArray(result.toolGuidelines));
+      assert.ok(result.toolGuidelines.length >= 3);
+      assert.ok(result.toolGuidelines.some((g) => g.name === 'calculator'));
+      assert.ok(result.toolGuidelines.some((g) => g.name === 'data_inspector'));
+      assert.ok(result.toolGuidelines.some((g) => g.name === 'prompt_architect'));
+    });
+
+    it('should audit prompt quality and return rubric score, strengths, and recommendations', async () => {
+      const { promptArchitectTool } = await import('../src/agent/skills/prompt-architect.js');
+
+      // Test weak prompt
+      const weakAudit = await promptArchitectTool.execute({
+        action: 'audit',
+        existingPrompt: 'Answer user queries nicely.',
+      });
+      assert.strictEqual(weakAudit.action, 'audit');
+      assert.ok(weakAudit.auditReport);
+      assert.ok(weakAudit.auditReport.overallScore < 50);
+      assert.ok(weakAudit.auditReport.missingGuardrails.length > 0);
+      assert.ok(weakAudit.auditReport.recommendations.length > 0);
+      assert.ok(weakAudit.auditReport.improvedPromptDraft);
+
+      // Test comprehensive prompt
+      const strongAudit = await promptArchitectTool.execute({
+        action: 'audit',
+        existingPrompt:
+          '# Agent Persona & Mission\nYou are an expert agent. Invoke calculator tool for math. Do not hallucinate unverified data. Use markdown tables and bullet formatting.',
+      });
+      assert.strictEqual(strongAudit.auditReport?.overallScore, 100);
+      assert.strictEqual(strongAudit.auditReport?.strengths.length, 5);
+
+      // Test empty prompt
+      const emptyAudit = await promptArchitectTool.execute({
+        action: 'audit',
+        existingPrompt: '',
+      });
+      assert.strictEqual(emptyAudit.auditReport?.overallScore, 0);
+    });
+  });
+
   describe('ToolRegistry', () => {
     it('should resolve both bare tool name and prefixed tool names like default_api:calculator', async () => {
       const registry = new ToolRegistry();

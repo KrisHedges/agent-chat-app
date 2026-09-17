@@ -40,6 +40,20 @@ describe('MessageList Component', () => {
     expect(handlePromptClick).toHaveBeenCalledWith(
       expect.stringContaining('How can I embed this agent interface')
     );
+
+    // Test Prompt Architect click
+    const architectCard = screen.getByText('Prompt Architect');
+    fireEvent.click(architectCard);
+    expect(handlePromptClick).toHaveBeenCalledWith(
+      expect.stringContaining('Help me architect a production system prompt')
+    );
+
+    // Test Prompt Audit click
+    const auditCard = screen.getByText('Prompt Audit');
+    fireEvent.click(auditCard);
+    expect(handlePromptClick).toHaveBeenCalledWith(
+      expect.stringContaining('Can you audit and improve an existing system prompt')
+    );
   });
 
   it('renders messages and scrolls to bottom', () => {

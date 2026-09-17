@@ -1,6 +1,7 @@
 import { ToolDefinition, Skill } from '../types.js';
 import { dataInspectorTool } from './data-inspector.js';
 import { calculatorTool } from './calculator.js';
+import { promptArchitectTool } from './prompt-architect.js';
 
 export class ToolRegistry {
   private tools: Map<string, ToolDefinition> = new Map();
@@ -8,6 +9,7 @@ export class ToolRegistry {
   constructor() {
     this.register(dataInspectorTool as unknown as ToolDefinition);
     this.register(calculatorTool as unknown as ToolDefinition);
+    this.register(promptArchitectTool as unknown as ToolDefinition);
   }
 
   register(tool: ToolDefinition): void {
