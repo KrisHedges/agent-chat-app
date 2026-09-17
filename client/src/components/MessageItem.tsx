@@ -1,6 +1,9 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 import { Message } from '../types/index.js';
 import { AttachmentChip } from './AttachmentChip.js';
 import { ToolExecutionCard } from './ToolExecutionCard.js';
@@ -79,7 +82,12 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message, onRetry, isLo
             } message-bubble`}
           >
             {displayContent ? (
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{displayContent}</ReactMarkdown>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm, remarkMath]}
+                rehypePlugins={[rehypeKatex]}
+              >
+                {displayContent}
+              </ReactMarkdown>
             ) : (
               <span className={`${styles.thinkingShimmer} thinking-shimmer`}>
                 Thinking{message.modelName || modelName ? ` with ${message.modelName || modelName}` : ''}...

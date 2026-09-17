@@ -191,5 +191,19 @@ describe('MessageItem Component', () => {
     expect(geminiImg).toBeDefined();
     expect(geminiImg.getAttribute('src')).toBe('/gemini.svg');
   });
+
+  it('renders LaTeX math equations using KaTeX', () => {
+    const mathMsg: Message = {
+      id: 'm_math',
+      role: 'model',
+      content: 'Formula: $$\\text{CAGR} = \\left( \\frac{340,000}{120,000} \\right)^{\\frac{1}{5}} - 1$$',
+      timestamp: Date.now(),
+    };
+
+    const { container } = render(<MessageItem message={mathMsg} />);
+    const katexEl = container.querySelector('.katex');
+    expect(katexEl).toBeDefined();
+    expect(katexEl).not.toBeNull();
+  });
 });
 
