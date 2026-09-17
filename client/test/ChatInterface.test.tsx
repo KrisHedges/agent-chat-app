@@ -148,6 +148,13 @@ describe('ChatInterface Component', () => {
         expect(screen.getByText('data.csv')).toBeDefined();
         expect(screen.getByText('notes.txt')).toBeDefined();
       });
+
+      // Drop with empty files returns early
+      fireEvent.drop(appContainer, {
+        preventDefault: vi.fn(),
+        stopPropagation: vi.fn(),
+        dataTransfer: { files: [] },
+      });
     } finally {
       window.FileReader = origFileReader;
     }

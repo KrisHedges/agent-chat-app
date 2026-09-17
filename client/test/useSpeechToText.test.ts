@@ -176,4 +176,48 @@ describe('useSpeechToText Hook', () => {
     unmount();
     expect(mockRecognitionInstance.abort).toHaveBeenCalled();
   });
+
+  it('aborts existing recognition instance if startListening is called again while active', () => {
+    const { result } = renderHook(() => useSpeechToText());
+
+    act(() => {
+      result.current.startListening();
+    });
+    expect(mockRecognitionInstance.start).toHaveBeenCalledTimes(1);
+
+    const firstInstance = mockRecognitionInstance;
+
+    // Call startListening again
+    act(() => {
+      result.current.startListening();
+    });
+
+    expect(firstInstance.abort).toHaveBeenCalled();
+  });
+
+  it('catches and reports error if recognition.start throws an exception', () => {
+    const onError = vi.fn();
+    const origSpeechRecognition = (window as any).SpeechRecognition;
+
+    class FailingSpeechRecognition extends MockSpeechRecognition {
+      override start = vi.fn().mockImplementation(() => {
+        throw new Error('Recognition start rejected');
+      });
+    }
+
+    (window as any).SpeechRecognition = FailingSpeechRecognition;
+
+    try {
+      const { result } = renderHook(() => useSpeechToText({ onError }));
+      act(() => {
+        result.current.startListening();
+      });
+
+      expect(result.current.isListening).toBe(false);
+      expect(result.current.error).toBe('Recognition start rejected');
+      expect(onError).toHaveBeenCalledWith('Recognition start rejected');
+    } finally {
+      (window as any).SpeechRecognition = origSpeechRecognition;
+    }
+  });
 });
