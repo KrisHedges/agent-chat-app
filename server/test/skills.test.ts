@@ -214,6 +214,41 @@ describe('Built-in Skills Tests', () => {
       });
       assert.strictEqual(emptyAudit.auditReport?.overallScore, 0);
     });
+
+    it('should scaffold new custom skill with TypeScript code, registry hookup, tests, and prompt guidelines', async () => {
+      const { promptArchitectTool } = await import('../src/agent/skills/prompt-architect.js');
+      const result = await promptArchitectTool.execute({
+        action: 'scaffold_tool',
+        toolName: 'currency_converter',
+        toolDescription: 'Converts financial amounts between currencies using live exchange rates',
+        toolParameters: [
+          { name: 'amount', type: 'number', description: 'Monetary amount to convert', required: true },
+          { name: 'fromCurrency', type: 'string', description: 'Source currency code', required: true },
+          { name: 'toCurrency', type: 'string', description: 'Target currency code', required: false },
+        ],
+      });
+
+      assert.strictEqual(result.action, 'scaffold_tool');
+      assert.ok(result.scaffoldedTool);
+      assert.strictEqual(result.scaffoldedTool.toolName, 'currency_converter');
+      assert.strictEqual(result.scaffoldedTool.fileName, 'server/src/agent/skills/currency-converter.ts');
+      assert.ok(result.scaffoldedTool.code.includes('export const currency_converterTool: ToolDefinition'));
+      assert.ok(result.scaffoldedTool.code.includes('amount: number;'));
+      assert.ok(result.scaffoldedTool.code.includes('fromCurrency: string;'));
+      assert.ok(result.scaffoldedTool.code.includes('toCurrency?: string;'));
+      assert.ok(result.scaffoldedTool.registrySnippet.includes("import { currency_converterTool } from './currency-converter.js'"));
+      assert.ok(result.scaffoldedTool.configSnippet.includes('"currency_converter"'));
+      assert.ok(result.scaffoldedTool.testSnippet.includes("describe('currency_converter tool'"));
+      assert.ok(result.scaffoldedTool.promptInstruction.includes('`currency_converter`'));
+
+      // Test with default parameter fallback
+      const defaultParamResult = await promptArchitectTool.execute({
+        action: 'scaffold_tool',
+        toolName: 'simple_echo',
+      });
+      assert.ok(defaultParamResult.scaffoldedTool);
+      assert.ok(defaultParamResult.scaffoldedTool.code.includes('input: string;'));
+    });
   });
 
   describe('ToolRegistry', () => {

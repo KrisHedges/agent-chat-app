@@ -1,7 +1,14 @@
 import { ToolDefinition } from '../types.js';
 
+export interface ToolParamField {
+  name: string;
+  type: string;
+  description: string;
+  required?: boolean;
+}
+
 export interface PromptArchitectParams {
-  action: 'blueprint' | 'audit' | 'introspect';
+  action: 'blueprint' | 'audit' | 'introspect' | 'scaffold_tool';
   agentName?: string;
   mission?: string;
   domain?: string;
@@ -10,6 +17,21 @@ export interface PromptArchitectParams {
   guardrails?: string[];
   tone?: string;
   existingPrompt?: string;
+  // Fields for scaffold_tool
+  toolName?: string;
+  toolDescription?: string;
+  toolParameters?: ToolParamField[];
+  sampleOutput?: Record<string, unknown>;
+}
+
+export interface ScaffoldedTool {
+  toolName: string;
+  fileName: string;
+  code: string;
+  registrySnippet: string;
+  configSnippet: string;
+  testSnippet: string;
+  promptInstruction: string;
 }
 
 export interface PromptArchitectResult {
@@ -28,6 +50,7 @@ export interface PromptArchitectResult {
     recommendations: string[];
     improvedPromptDraft?: string;
   };
+  scaffoldedTool?: ScaffoldedTool;
   summary: string;
 }
 
@@ -53,9 +76,9 @@ export const promptArchitectTool: ToolDefinition<PromptArchitectParams, PromptAr
     properties: {
       action: {
         type: 'string',
-        enum: ['blueprint', 'audit', 'introspect'],
+        enum: ['blueprint', 'audit', 'introspect', 'scaffold_tool'],
         description:
-          'Action to perform: "blueprint" to generate agent.prompt.md and agent.config.json, "audit" to evaluate an existing prompt, or "introspect" to get guidelines for registered tools.',
+          'Action to perform: "blueprint" to generate agent.prompt.md and agent.config.json, "audit" to evaluate an existing prompt, "introspect" to get guidelines for registered tools, or "scaffold_tool" to scaffold a new TypeScript skill.',
       },
       agentName: {
         type: 'string',
@@ -91,6 +114,28 @@ export const promptArchitectTool: ToolDefinition<PromptArchitectParams, PromptAr
         type: 'string',
         description: 'Existing prompt text to evaluate when action is "audit".',
       },
+      toolName: {
+        type: 'string',
+        description: 'Name of the tool to scaffold (e.g. "currency_converter", "weather_lookup").',
+      },
+      toolDescription: {
+        type: 'string',
+        description: 'Detailed description of what the tool accomplishes.',
+      },
+      toolParameters: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            name: { type: 'string', description: 'Parameter name' },
+            type: { type: 'string', description: 'Type (string, number, boolean, array, object)' },
+            description: { type: 'string', description: 'Description of parameter' },
+            required: { type: 'boolean', description: 'Whether parameter is required' },
+          },
+          required: ['name', 'type', 'description'],
+        },
+        description: 'List of parameters the tool accepts.',
+      },
     },
     required: ['action'],
   },
@@ -100,6 +145,126 @@ export const promptArchitectTool: ToolDefinition<PromptArchitectParams, PromptAr
     // Lazy load registry to avoid circular load-time dependencies
     const { defaultToolRegistry } = await import('./registry.js');
     const registeredTools = defaultToolRegistry ? defaultToolRegistry.getAll() : [];
+
+    if (action === 'scaffold_tool') {
+      const rawName = params.toolName || 'custom_tool';
+      const sanitizedName = rawName.toLowerCase().replace(/[^a-z0-9_]/g, '_');
+      const fileBaseName = sanitizedName.replace(/_/g, '-');
+      const pascalName = sanitizedName
+        .split('_')
+        .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+        .join('');
+      const toolDesc =
+        params.toolDescription || `Performs specialized ${sanitizedName.replace(/_/g, ' ')} operations.`;
+
+      const propertiesObj: Record<string, any> = {};
+      const requiredList: string[] = [];
+      const interfaceProps: string[] = [];
+
+      if (params.toolParameters && params.toolParameters.length > 0) {
+        for (const p of params.toolParameters) {
+          propertiesObj[p.name] = { type: p.type || 'string', description: p.description };
+          if (p.required) requiredList.push(p.name);
+          const tsType =
+            p.type === 'number'
+              ? 'number'
+              : p.type === 'boolean'
+              ? 'boolean'
+              : p.type === 'array'
+              ? 'unknown[]'
+              : p.type === 'object'
+              ? 'Record<string, unknown>'
+              : 'string';
+          interfaceProps.push(`  ${p.name}${p.required ? '' : '?'}: ${tsType};`);
+        }
+      } else {
+        propertiesObj['input'] = { type: 'string', description: 'Input parameter for the tool' };
+        requiredList.push('input');
+        interfaceProps.push('  input: string;');
+      }
+
+      const generatedCode = `import { ToolDefinition } from '../types.js';
+
+export interface ${pascalName}Params {
+${interfaceProps.join('\n')}
+}
+
+export interface ${pascalName}Result {
+  isSuccess: boolean;
+  data?: Record<string, unknown> | unknown[];
+  error?: string;
+}
+
+export const ${sanitizedName}Tool: ToolDefinition<${pascalName}Params, ${pascalName}Result> = {
+  name: '${sanitizedName}',
+  description: '${toolDesc}',
+  parameters: {
+    type: 'object',
+    properties: ${JSON.stringify(propertiesObj, null, 6).replace(/\\"/g, '"')},
+    required: ${JSON.stringify(requiredList)},
+  },
+  execute: async (params) => {
+    try {
+      // TODO: Connect to external API, database, or compute logic here
+      return {
+        isSuccess: true,
+        data: {
+          status: 'completed',
+          executedAt: new Date().toISOString(),
+          echo: params,
+        },
+      };
+    } catch (err: any) {
+      return {
+        isSuccess: false,
+        error: err?.message || 'Failed to execute ${sanitizedName}',
+      };
+    }
+  },
+};
+`;
+
+      const registrySnippet = `// In server/src/agent/skills/registry.ts:
+import { ${sanitizedName}Tool } from './${fileBaseName}.js';
+
+// In constructor():
+this.register(${sanitizedName}Tool as unknown as ToolDefinition);`;
+
+      const configSnippet = `// In agent.config.json:
+"enabledSkills": [
+  ...,
+  "${sanitizedName}"
+]`;
+
+      const testSnippet = `// In server/test/skills.test.ts:
+describe('${sanitizedName} tool', () => {
+  it('should execute successfully with valid parameters', async () => {
+    const { ${sanitizedName}Tool } = await import('../src/agent/skills/${fileBaseName}.js');
+    const result = await ${sanitizedName}Tool.execute(${JSON.stringify(
+        Object.fromEntries(
+          requiredList.map((k) => [k, propertiesObj[k].type === 'number' ? 42 : 'test_value'])
+        )
+      )});
+    assert.strictEqual(result.isSuccess, true);
+  });
+});`;
+
+      const promptInstruction = `- **\`${sanitizedName}\`**: Invoke \`${sanitizedName}\` whenever the user requests ${toolDesc.toLowerCase().replace(/\.$/, '')}. Never estimate or hallucinate results without invoking this tool.`;
+
+      return {
+        action: 'scaffold_tool',
+        scaffoldedTool: {
+          toolName: sanitizedName,
+          fileName: `server/src/agent/skills/${fileBaseName}.ts`,
+          code: generatedCode,
+          registrySnippet,
+          configSnippet,
+          testSnippet,
+          promptInstruction,
+        },
+        summary: `Successfully scaffolded "${sanitizedName}" tool in server/src/agent/skills/${fileBaseName}.ts with registry hookup, tests, and prompt guidelines.`,
+      };
+    }
 
     if (action === 'introspect') {
       const toolGuidelines = registeredTools.map((t) => ({

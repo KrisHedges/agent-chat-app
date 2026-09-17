@@ -54,6 +54,13 @@ describe('MessageList Component', () => {
     expect(handlePromptClick).toHaveBeenCalledWith(
       expect.stringContaining('Can you audit and improve an existing system prompt')
     );
+
+    // Test Build Custom Skill click
+    const skillCard = screen.getByText('Build Custom Skill');
+    fireEvent.click(skillCard);
+    expect(handlePromptClick).toHaveBeenCalledWith(
+      expect.stringContaining('I want to build a new custom skill for my agent')
+    );
   });
 
   it('renders messages and scrolls to bottom', () => {

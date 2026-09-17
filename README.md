@@ -113,6 +113,12 @@ The manifest at the project root defines the identity, model, and operational pa
       "description": "Evaluate and upgrade an existing agent prompt against Gemini best practices.",
       "prompt": "Can you audit and improve an existing system prompt for me? Here is my current draft: 'You are a helpful domain assistant. Answer questions accurately and be nice.'",
       "icon": "sparkles"
+    },
+    {
+      "title": "Build Custom Skill",
+      "description": "Scaffold a typed TypeScript tool definition, parameter schema, and tests.",
+      "prompt": "I want to build a new custom skill for my agent. Can you guide me through designing the ToolDefinition interface, parameters schema, and how to register and test it in this codebase?",
+      "icon": "skills"
     }
   ],
   "enabledSkills": [
@@ -394,7 +400,7 @@ All commands should be executed from the `agent-chat-app` root directory:
 | **Start Everything** | `npm run dev` | Runs backend (3001) and frontend (8080) concurrently with hot-reloading. |
 | **Start Server Only** | `npm run dev:server` | Starts the Express server using `tsx watch` for auto-restarts on code edits. |
 | **Start Client Only** | `npm run dev:client` | Starts Vite dev server with Hot Module Replacement (HMR). |
-| **Run All Tests** | `npm test` | Executes all 168 unit tests across backend and frontend with zero noise. |
+| **Run All Tests** | `npm test` | Executes all 169 unit tests across backend and frontend with zero noise. |
 | **Run Tests with Debug Logs** | `npm run test:debug` | Runs tests with full application debug logging visible in the console. |
 | **Generate Coverage Report** | `npm run test:coverage` | Prints detailed line/branch/func coverage tables for both workspaces. |
 | **View Visual Coverage** | `open client/coverage/index.html` | Opens the interactive line-by-line HTML coverage report in your browser. |
@@ -405,13 +411,13 @@ All commands should be executed from the `agent-chat-app` root directory:
 
 ## Testing & Code Quality
 
-The project maintains **~98.5% test coverage** with 168 unit tests across 28 suites that execute in **~2.5 seconds**:
+The project maintains **~98.5% test coverage** with 169 unit tests across 28 suites that execute in **~2.5 seconds**:
 
 ```text
 Test Summary:
-✔ Backend (server):  76 / 76 passed (100% on core services) ~0.5s
+✔ Backend (server):  77 / 77 passed (100% on core services) ~0.5s
 ✔ Frontend (client): 92 / 92 passed (100% on all components) ~2.0s
-Total: 168 passed, 0 failed, 0 warnings
+Total: 169 passed, 0 failed, 0 warnings
 ```
 
 ### Coverage by Component & Module

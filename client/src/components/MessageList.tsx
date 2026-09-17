@@ -55,6 +55,13 @@ const DEFAULT_CARDS: StarterPrompt[] = [
       "Can you audit and improve an existing system prompt for me? Here is my current draft: 'You are a helpful domain assistant. Answer questions accurately and be nice.'",
     icon: 'sparkles',
   },
+  {
+    title: 'Build Custom Skill',
+    description: 'Scaffold a typed TypeScript tool definition, parameter schema, and tests.',
+    prompt:
+      'I want to build a new custom skill for my agent. Can you guide me through designing the ToolDefinition interface, parameters schema, and how to register and test it in this codebase?',
+    icon: 'skills',
+  },
 ];
 
 const renderCardIcon = (icon?: string) => {
