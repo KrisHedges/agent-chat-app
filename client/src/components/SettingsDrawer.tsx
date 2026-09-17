@@ -1,6 +1,6 @@
 import React from 'react';
 import { AgentSettings } from '../types/index.js';
-import { X, Sliders, Cpu, Wrench, Tag, Lock } from 'lucide-react';
+import { X, Sliders, Cpu, Wrench, Tag, Lock, Sparkles } from 'lucide-react';
 import styles from './SettingsDrawer.module.css';
 
 interface SettingsDrawerProps {
@@ -87,6 +87,27 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
             {isLocked
               ? 'Managed by agent.config.json'
               : 'Configurable name displayed across the workspace and empty state.'}
+          </span>
+        </div>
+
+        {/* Welcome Tagline / Description Configuration */}
+        <div className={`${styles.formGroup} form-group`}>
+          <label>
+            <Sparkles size={14} style={{ display: 'inline', marginRight: '4px' }} />
+            Welcome Tagline & Description
+          </label>
+          <textarea
+            className={`${styles.formTextarea} form-textarea`}
+            placeholder="e.g. A modular starter kit for building custom Gemini agents..."
+            value={settings.tagline ?? ''}
+            disabled={isLocked}
+            rows={3}
+            onChange={(e) => onUpdateSettings({ ...settings, tagline: e.target.value })}
+          />
+          <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+            {isLocked
+              ? 'Managed by agent.config.json'
+              : 'Descriptive tagline displayed below the agent title on the welcome screen.'}
           </span>
         </div>
 

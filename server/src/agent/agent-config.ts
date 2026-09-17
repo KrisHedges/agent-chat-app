@@ -55,7 +55,8 @@ export const DEFAULT_STARTER_PROMPTS: StarterPrompt[] = [
 
 export const DEFAULT_AGENT_CONFIG: AgentConfig = {
   name: 'Gemini Chat Agent Starter Kit',
-  tagline: 'Enterprise AI Assistant powered by Google Gemini',
+  tagline:
+    'A modular starter kit for building custom Gemini agents with multi-modal reasoning, audited tool execution, encrypted session persistence, and Looker extension compatibility.',
   model: 'gemini-3.8-flash',
   temperature: 0.4,
   systemPromptFile: 'agent.prompt.md',

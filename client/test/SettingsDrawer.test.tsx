@@ -144,6 +144,25 @@ describe('SettingsDrawer Component', () => {
     });
   });
 
+  it('updates tagline when typing in tagline textarea', () => {
+    const handleUpdate = vi.fn();
+    render(
+      <SettingsDrawer
+        isOpen={true}
+        onClose={vi.fn()}
+        settings={initialSettings}
+        onUpdateSettings={handleUpdate}
+      />
+    );
+
+    const taglineInput = screen.getByPlaceholderText(/e\.g\. A modular starter kit/i);
+    fireEvent.change(taglineInput, { target: { value: 'Custom assistant tagline' } });
+    expect(handleUpdate).toHaveBeenCalledWith({
+      ...initialSettings,
+      tagline: 'Custom assistant tagline',
+    });
+  });
+
   it('renders lockdown banner and disables form inputs when isLocked is true', () => {
     render(
       <SettingsDrawer
@@ -163,6 +182,9 @@ describe('SettingsDrawer Component', () => {
 
     const nameInput = screen.getByPlaceholderText(/e\.g\. Gemini Chat Agent Starter Kit/i) as HTMLInputElement;
     expect(nameInput.disabled).toBe(true);
+
+    const taglineInput = screen.getByPlaceholderText(/e\.g\. A modular starter kit/i) as HTMLTextAreaElement;
+    expect(taglineInput.disabled).toBe(true);
 
     const select = screen.getByRole('combobox') as HTMLSelectElement;
     expect(select.disabled).toBe(true);

@@ -99,7 +99,7 @@ export const MessageList: React.FC<MessageListProps> = ({
         <h2 className={styles.emptyChatTitle}>{agentName || 'Gemini Chat Agent Starter Kit'}</h2>
         <p className={styles.emptyChatDesc}>
           {tagline ||
-            'A multi-modal agent with extensible skills, real-time streaming, and Looker extension compatibility. Attach JSON files, images, or ask questions below.'}
+            'A modular starter kit for building custom Gemini agents with multi-modal reasoning, audited tool execution, encrypted session persistence, and Looker extension compatibility.'}
         </p>
 
         <div className={`${styles.featureCards} feature-cards`}>
