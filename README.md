@@ -1,6 +1,6 @@
-# 🤖 Gemini AI Agent Chat Application & Framework
+# 🤖 Gemini Chat Agent Starter Kit
 
-> A production-grade, generic **AI Agent Framework** and **Multi-Modal React Chat Interface** powered by Google Gemini models via the official `@google/genai` SDK.
+> A production-grade, configurable **Gemini Chat Agent Starter Kit** and **Multi-Modal React Chat Interface** powered by Google Gemini models via the official `@google/genai` SDK.
 >
 > Built as a lightweight, zero-configuration **standalone application** for local development, while strictly adhering to architectural constraints that guarantee **100% compatibility with the Google Looker Extension Framework and embedded dashboards**.
 

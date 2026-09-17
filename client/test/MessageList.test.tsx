@@ -13,7 +13,7 @@ describe('MessageList Component', () => {
     const handlePromptClick = vi.fn();
     render(<MessageList messages={[]} onPromptClick={handlePromptClick} />);
 
-    expect(screen.getByText('Gemini AI Agent Framework')).toBeDefined();
+    expect(screen.getByText('Gemini Chat Agent Starter Kit')).toBeDefined();
 
     // Test Data Profiling click
     const profilingCard = screen.getByText('Data Profiling');
@@ -56,5 +56,10 @@ describe('MessageList Component', () => {
     expect(screen.getByText('First message')).toBeDefined();
     expect(screen.getByText('Second message')).toBeDefined();
     expect(scrollMock).toHaveBeenCalled();
+  });
+
+  it('renders custom agentName when provided in props', () => {
+    render(<MessageList messages={[]} onPromptClick={vi.fn()} agentName="Custom Analytical Agent" />);
+    expect(screen.getByText('Custom Analytical Agent')).toBeDefined();
   });
 });

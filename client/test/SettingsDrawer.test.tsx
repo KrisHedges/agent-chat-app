@@ -6,6 +6,7 @@ import { AgentSettings } from '../src/types/index.js';
 
 describe('SettingsDrawer Component', () => {
   const initialSettings: AgentSettings = {
+    agentName: 'Gemini Chat Agent Starter Kit',
     model: 'gemini-3.8-flash',
     systemPrompt: 'You are a Looker advisor.',
   };
@@ -113,5 +114,24 @@ describe('SettingsDrawer Component', () => {
 
     const select = screen.getByRole('combobox') as HTMLSelectElement;
     expect(select.value).toBe('custom');
+  });
+
+  it('updates agentName when typing custom agent display name', () => {
+    const handleUpdate = vi.fn();
+    render(
+      <SettingsDrawer
+        isOpen={true}
+        onClose={vi.fn()}
+        settings={initialSettings}
+        onUpdateSettings={handleUpdate}
+      />
+    );
+
+    const nameInput = screen.getByPlaceholderText(/e\.g\. Gemini Chat Agent Starter Kit/i);
+    fireEvent.change(nameInput, { target: { value: 'Looker Analytical Agent' } });
+    expect(handleUpdate).toHaveBeenCalledWith({
+      ...initialSettings,
+      agentName: 'Looker Analytical Agent',
+    });
   });
 });

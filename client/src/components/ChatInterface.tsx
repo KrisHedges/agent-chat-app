@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAgentChat } from '../hooks/useAgentChat.js';
 import { useLookerHost } from '../looker/StandaloneProvider.js';
 import { MessageList } from './MessageList.js';
@@ -34,6 +34,13 @@ export const ChatInterface: React.FC = () => {
     loadConversation,
     deleteConversation,
   } = useAgentChat(lookerHost.user.id);
+
+  // Sync window title with configurable agent name
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.title = settings.agentName || 'Gemini Chat Agent Starter Kit';
+    }
+  }, [settings.agentName]);
 
   // Drag and drop handler for the whole chat viewport
   const handleDragOver = (e: React.DragEvent) => {
@@ -139,6 +146,9 @@ export const ChatInterface: React.FC = () => {
                   <Menu size={20} strokeWidth={2} />
                 </button>
               )}
+              <span className={styles.toolbarTitle} data-testid="agent-display-name">
+                {settings.agentName || 'Gemini Chat Agent Starter Kit'}
+              </span>
             </div>
 
             <div className={styles.toolbarRight}>
@@ -180,6 +190,7 @@ export const ChatInterface: React.FC = () => {
             onPromptClick={(prompt) => sendMessage(prompt)}
             onRetry={retryLastMessage}
             isLoading={isLoading}
+            agentName={settings.agentName}
           />
 
           <InputBar

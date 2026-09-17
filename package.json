@@ -2,7 +2,7 @@
   "name": "agent-chat-app-root",
   "version": "1.0.0",
   "private": true,
-  "description": "Generic Gemini Agent Framework and Multi-Modal React Chat Interface with Looker Compatibility",
+  "description": "Gemini Chat Agent Starter Kit and Multi-Modal React Chat Interface with Looker Compatibility",
   "workspaces": [
     "server",
     "client"

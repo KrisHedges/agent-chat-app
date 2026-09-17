@@ -1,6 +1,6 @@
 import React from 'react';
 import { AgentSettings } from '../types/index.js';
-import { X, Sliders, Cpu, Wrench } from 'lucide-react';
+import { X, Sliders, Cpu, Wrench, Tag } from 'lucide-react';
 import styles from './SettingsDrawer.module.css';
 
 interface SettingsDrawerProps {
@@ -37,6 +37,24 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
           <button className="btn btn-ghost" onClick={onClose} style={{ padding: '4px' }}>
             <X size={16} />
           </button>
+        </div>
+
+        {/* Agent Name Configuration */}
+        <div className={`${styles.formGroup} form-group`}>
+          <label>
+            <Tag size={14} style={{ display: 'inline', marginRight: '4px' }} />
+            Agent Display Name
+          </label>
+          <input
+            type="text"
+            className={`${styles.formInput} form-input`}
+            placeholder="e.g. Gemini Chat Agent Starter Kit"
+            value={settings.agentName ?? ''}
+            onChange={(e) => onUpdateSettings({ ...settings, agentName: e.target.value })}
+          />
+          <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+            Configurable name displayed across the workspace and empty state.
+          </span>
         </div>
 
         {/* Model Selection */}

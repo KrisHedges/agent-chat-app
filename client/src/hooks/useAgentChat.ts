@@ -17,10 +17,36 @@ export function useAgentChat(userId: string, initialSettings?: Partial<AgentSett
   const [conversations, setConversations] = useState<ConversationSummary[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
-  const [settings, setSettings] = useState<AgentSettings>({
-    model: initialSettings?.model || 'gemini-3.8-flash',
-    systemPrompt: initialSettings?.systemPrompt || '',
+  const [settings, setSettingsState] = useState<AgentSettings>(() => {
+    try {
+      const saved = typeof window !== 'undefined' ? localStorage.getItem('agent_chat_settings') : null;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return {
+          agentName: initialSettings?.agentName || parsed.agentName || 'Gemini Chat Agent Starter Kit',
+          model: initialSettings?.model || parsed.model || 'gemini-3.8-flash',
+          systemPrompt: initialSettings?.systemPrompt ?? parsed.systemPrompt ?? '',
+        };
+      }
+    } catch {}
+    return {
+      agentName: initialSettings?.agentName || 'Gemini Chat Agent Starter Kit',
+      model: initialSettings?.model || 'gemini-3.8-flash',
+      systemPrompt: initialSettings?.systemPrompt || '',
+    };
   });
+
+  const setSettings = useCallback((newSettings: AgentSettings | ((prev: AgentSettings) => AgentSettings)) => {
+    setSettingsState((prev) => {
+      const updated = typeof newSettings === 'function' ? newSettings(prev) : newSettings;
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('agent_chat_settings', JSON.stringify(updated));
+        }
+      } catch {}
+      return updated;
+    });
+  }, []);
 
   const abortControllerRef = useRef<AbortController | null>(null);
 

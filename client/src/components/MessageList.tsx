@@ -9,6 +9,7 @@ interface MessageListProps {
   onPromptClick: (text: string) => void;
   onRetry?: (messageId: string) => void;
   isLoading?: boolean;
+  agentName?: string;
 }
 
 export const MessageList: React.FC<MessageListProps> = ({
@@ -16,6 +17,7 @@ export const MessageList: React.FC<MessageListProps> = ({
   onPromptClick,
   onRetry,
   isLoading,
+  agentName,
 }) => {
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -29,7 +31,7 @@ export const MessageList: React.FC<MessageListProps> = ({
         <div className={`${styles.emptyChatIcon} empty-chat-icon`}>
           <Sparkles size={28} />
         </div>
-        <h2 className={styles.emptyChatTitle}>Gemini AI Agent Framework</h2>
+        <h2 className={styles.emptyChatTitle}>{agentName || 'Gemini Chat Agent Starter Kit'}</h2>
         <p className={styles.emptyChatDesc}>
           A multi-modal agent with extensible skills, real-time streaming, and Looker extension compatibility.
           Attach JSON files, images, or ask questions below.

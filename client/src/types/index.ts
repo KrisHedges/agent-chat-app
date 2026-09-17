@@ -44,6 +44,7 @@ export type StreamEvent =
   | { type: 'done'; usage?: { promptTokens?: number; candidatesTokens?: number } };
 
 export interface AgentSettings {
+  agentName?: string;
   model: string;
   systemPrompt: string;
 }

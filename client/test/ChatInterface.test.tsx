@@ -204,7 +204,7 @@ describe('ChatInterface Component', () => {
     // Click New Chat button in chat toolbar
     const newChatBtn = screen.getByRole('button', { name: /New Chat/i });
     fireEvent.click(newChatBtn);
-    expect(await screen.findByText('Gemini AI Agent Framework')).toBeDefined();
+    expect(await screen.findByRole('heading', { name: 'Gemini Chat Agent Starter Kit' })).toBeDefined();
 
     // Send message again and test Clear button
     fireEvent.change(textarea, { target: { value: 'Second question' } });
@@ -213,7 +213,7 @@ describe('ChatInterface Component', () => {
 
     const clearBtn = screen.getByTitle('Clear chat messages');
     fireEvent.click(clearBtn);
-    expect(await screen.findByText('Gemini AI Agent Framework')).toBeDefined();
+    expect(await screen.findByRole('heading', { name: 'Gemini Chat Agent Starter Kit' })).toBeDefined();
   });
 
   it('adds attachments via InputBar file upload and supports sidebar onToggle', async () => {
