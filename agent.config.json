@@ -46,6 +46,12 @@
       "description": "Scaffold a typed TypeScript tool definition, parameter schema, and tests.",
       "prompt": "I want to build a new custom skill for my agent. Can you guide me through designing the ToolDefinition interface, parameters schema, and how to register and test it in this codebase?",
       "icon": "skills"
+    },
+    {
+      "title": "App Customization",
+      "description": "Learn how to customize the agent manifest, UI theme, prompt, and branding.",
+      "prompt": "How do I customize this application? Walk me through configuring agent.config.json, modifying the UI theme and branding, and locking it down for production.",
+      "icon": "settings"
     }
   ],
   "enabledSkills": [

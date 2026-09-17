@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Message, StarterPrompt } from '../types/index.js';
 import { MessageItem } from './MessageItem.js';
-import { Sparkles, FileCode, ImageIcon, Calculator, Box } from 'lucide-react';
+import { Sparkles, FileCode, ImageIcon, Calculator, Box, Sliders } from 'lucide-react';
 import styles from './MessageList.module.css';
 
 interface MessageListProps {
@@ -62,6 +62,13 @@ const DEFAULT_CARDS: StarterPrompt[] = [
       'I want to build a new custom skill for my agent. Can you guide me through designing the ToolDefinition interface, parameters schema, and how to register and test it in this codebase?',
     icon: 'skills',
   },
+  {
+    title: 'App Customization',
+    description: 'Learn how to customize the agent manifest, UI theme, prompt, and branding.',
+    prompt:
+      'How do I customize this application? Walk me through configuring agent.config.json, modifying the UI theme and branding, and locking it down for production.',
+    icon: 'settings',
+  },
 ];
 
 const renderCardIcon = (icon?: string) => {
@@ -82,6 +89,10 @@ const renderCardIcon = (icon?: string) => {
     case 'image':
     case 'chart':
       return <ImageIcon size={15} style={{ color: 'var(--accent-blue)' }} />;
+    case 'settings':
+    case 'config':
+    case 'customize':
+      return <Sliders size={15} style={{ color: 'var(--accent-blue)' }} />;
     default:
       return <Sparkles size={15} style={{ color: 'var(--accent-blue)' }} />;
   }

@@ -61,6 +61,13 @@ describe('MessageList Component', () => {
     expect(handlePromptClick).toHaveBeenCalledWith(
       expect.stringContaining('I want to build a new custom skill for my agent')
     );
+
+    // Test App Customization click
+    const customCard = screen.getByText('App Customization');
+    fireEvent.click(customCard);
+    expect(handlePromptClick).toHaveBeenCalledWith(
+      expect.stringContaining('How do I customize this application?')
+    );
   });
 
   it('renders messages and scrolls to bottom', () => {
