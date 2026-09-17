@@ -87,6 +87,11 @@
   --transition-speed-medium: 180ms;
   --transition-ease-default: cubic-bezier(0.16, 1, 0.3, 1);
 
-  /* Z-Index Layers */
+  /* Z-Index Layer Tokens */
+  --z-index-base: 1;
   --z-index-toolbar: 10;
+  --z-index-sidebar: 20;
+  --z-index-drawer: 100;
+  --z-index-modal: 1000;
+  --z-index-toast: 1100;
 }

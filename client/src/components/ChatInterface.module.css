@@ -48,12 +48,14 @@
   align-self: end;
   width: 100%;
   z-index: var(--z-index-toolbar, 10);
+  pointer-events: none;
 }
 
 .toolbarLeft {
   display: flex;
   align-items: center;
   gap: 12px;
+  pointer-events: auto;
 }
 
 .hamburgerBtn {
@@ -102,6 +104,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  pointer-events: auto;
 }
 
 .toolbarBtn {

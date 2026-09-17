@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: var(--z-index-modal, 1000);
   padding: 16px;
   animation: modalOverlayFadeIn var(--transition-speed-medium, 180ms) var(--transition-ease-default, cubic-bezier(0.16, 1, 0.3, 1)) forwards;
 }
