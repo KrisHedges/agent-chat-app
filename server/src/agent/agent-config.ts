@@ -40,7 +40,7 @@ export const DEFAULT_STARTER_PROMPTS: StarterPrompt[] = [
   },
   {
     title: 'Safe Calculations',
-    description: 'Execute verified math expressions via the calculator skill.',
+    description: 'Execute verified math calculations and display the proper formulas used.',
     prompt:
       'Calculate the compound annual growth rate if initial is 120000 and final is 340000 over 5 years.',
     icon: 'calculator',

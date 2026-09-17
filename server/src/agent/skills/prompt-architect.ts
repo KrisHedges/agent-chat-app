@@ -420,7 +420,7 @@ ${guardrailItems.join('\n')}
       },
       {
         title: 'Safe Calculations',
-        description: 'Run verified mathematical calculations via the calculator skill.',
+        description: 'Execute verified math calculations and display the proper formulas used.',
         prompt: 'Calculate the variance and percentage delta between our baseline and actual metrics.',
         icon: 'calculator',
       },
