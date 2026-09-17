@@ -77,10 +77,30 @@ The manifest at the project root defines the identity, model, and operational pa
   "temperature": 0.4,
   "systemPromptFile": "agent.prompt.md",
   "starterPrompts": [
-    "Analyze our quarterly regional sales trends",
-    "Suggest the best visualization for monthly churn data",
-    "Calculate rolling 7-day average revenue",
-    "Identify anomalous drop-offs in customer retention"
+    {
+      "title": "Data Profiling",
+      "description": "Profile JSON datasets, columns, null rates, and summary statistics.",
+      "prompt": "Can you inspect this sample JSON data: [{\"order_id\": 101, \"revenue\": 240.5, \"status\": \"completed\"}, {\"order_id\": 102, \"revenue\": 180.0, \"status\": \"pending\"}]",
+      "icon": "data"
+    },
+    {
+      "title": "Skills & Tools",
+      "description": "Discover registered skills and functions available to the agent.",
+      "prompt": "What skills and tools do you currently have registered?",
+      "icon": "skills"
+    },
+    {
+      "title": "Safe Calculations",
+      "description": "Execute verified math expressions via the calculator skill.",
+      "prompt": "Calculate the compound annual growth rate if initial is 120000 and final is 340000 over 5 years.",
+      "icon": "calculator"
+    },
+    {
+      "title": "Looker Integration",
+      "description": "Learn how to connect this agent to Looker extensions and iframe URLs.",
+      "prompt": "How can I embed this agent interface inside a Looker dashboard or extension?",
+      "icon": "looker"
+    }
   ],
   "enabledSkills": [
     "calculator",
@@ -99,7 +119,7 @@ The manifest at the project root defines the identity, model, and operational pa
 - **`model`**: Primary Gemini model (e.g. `gemini-3.8-flash`, `gemini-3.7-flash`, `gemini-3.1-pro`).
 - **`temperature`**: Sampling temperature sent to the Gemini API (`0.0` for deterministic math/code, up to `1.0` for creative tasks).
 - **`systemPromptFile`**: Relative path to the markdown file containing the system instructions.
-- **`starterPrompts`**: Array of domain-specific starter prompts displayed as clickable quick chips on the empty chat screen.
+- **`starterPrompts`**: Configurable starter cards (`title`, `description`, `prompt`, `icon`) displayed on the welcome screen to demonstrate your agent's available tools and skills.
 - **`lockdown.disableClientOverrides`**: When `true`, the server strictly ignores any client-side prompt or model tampering.
 - **`lockdown.hideSettingsInProduction`**: When `true`, hides the Settings drawer icon in production builds.
 
