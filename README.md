@@ -22,13 +22,13 @@
 
 ## What Is This Project?
 
-This application is an AI-powered conversational workspace designed for business intelligence, data inspection, mathematical problem solving, and document analysis. 
+This repository serves as a starter kit to develop tailored chat agents easily in a standalone env. 
+It can then be built and deployed as a bundle to be used as a looker extension (iframe) 
 
-Think of it as your personal analytical assistant:
+Out-of-the-box it Includes the ability to:
 - **Attach Real Files**: You can drag and drop spreadsheets (CSV), raw data (JSON), screenshots or charts (PNG, JPEG, WebP), and documents (TXT, Markdown). The agent reads and inspects them directly.
 - **Accurate Math & Analysis**: When asked to compute numbers or profile data, the agent invokes deterministically audited **Skills** (like a built-in calculator and schema profiler) so it never hallucinates mathematical calculations or column statistics.
 - **Privacy & Encryption**: All conversation history is automatically encrypted on your computer using bank-grade AES-256-GCM encryption before touching the disk.
-- **Zero-Barrier Setup**: You don't even need a Google API key to explore! The application includes an interactive development mode with mock streaming so anyone can clone the repo and immediately test the full UI.
 
 ---
 
@@ -43,8 +43,7 @@ Think of it as your personal analytical assistant:
 - **`calculator`**: Deterministically evaluates arithmetic, statistical expressions, and `Math` functions, guaranteeing accurate calculations without LLM math hallucinations.
 - **`data_inspector`**: Deeply analyzes JSON/CSV datasets, inferring column data types (`number`, `boolean`, `datetime`, `string`, `object`), null counts, unique frequencies, and numerical ranges (min, max, average).
 - **`prompt_architect`**: Scaffolds and audits agent system prompts and manifest configurations. Generates production-ready markdown blueprints (`agent.prompt.md`), calibrated manifests (`agent.config.json`), rubric-based audits of existing prompts against Gemini best practices, and registered tool guidelines.
-- **Gemini 3.x Thought Signature Preservation**: Fully complies with Google GenAI's latest function-calling protocol by preserving `thought_signature` parts across multi-turn reasoning loops.
-- **Extensible Tool Registry**: Add custom enterprise tools in `server/src/agent/skills/` by implementing the typed `ToolDefinition` interface.
+**Extensible Tool Registry**: Add custom tools in `server/src/agent/skills/` by implementing the typed `ToolDefinition` interface.
 
 ### 3. Encrypted-at-Rest Conversation History
 - **AES-256-GCM Authenticated Encryption**: Conversations are encrypted before saving to `server/data/conversations/` with random 96-bit IVs and 128-bit authentication tags to prevent data tampering.
@@ -54,17 +53,16 @@ Think of it as your personal analytical assistant:
 - **User Identity Display**: Shows current user credentials and role in the sidebar footer (`Local Developer` in standalone mode, authenticated user in Looker environment).
 
 ### 4. Interactive Configuration & Resilient Execution
-- **Model Selector & Settings Drawer**: Configure agent display name, welcome tagline, verified Gemini models (`gemini-3.8-flash`, `gemini-3.7-flash`, `gemini-3.1-pro`, `gemini-3.0-pro`, `gemini-2.5-flash`, `gemini-2.0-flash`), and customize system instructions per session.
-- **Collapsible Tool Execution Cards**: View real-time status badges (`Running skill: calculator...`), expandable function input arguments, and formatted JSON output responses.
+- **Model Selector & Settings Drawer**: Configure agent display name, welcome tagline, verified Gemini models (`gemini-3.8-flash`, `gemini-3.7-flash`, `gemini-3.1-pro`, `gemini-3.0-pro`, `gemini-2.5-flash`, `gemini-2.0-flash`), and customize system instructions per session in development mode.
+- **Transparent Tool Execution in Collapsible Cards**: View real-time status badges (`Running skill: calculator...`), expandable function input arguments, and formatted JSON output responses.
 - **Smart Error Recovery & Rollback**: Automatic detection of rate limits (429), high-demand spikes (503 Service Unavailable), and network drops, featuring a `[🔄 Try Again]` button that rolls back the failed agent turn cleanly.
-
 ---
 
 ## 🚀 Custom Agent Developer Guide & Manifest
 
-This starter kit is specifically engineered to be cloned and transformed into your own custom domain agent (e.g. *Looker Data Advisor*, *Sales Forecasting Assistant*, *Customer Support Copilot*).
+This starter kit is specifically engineered to be cloned and transformed into your own custom domain agent (e.g. *Looker Data Advisor*, *Forecasting Assistant*, *Support Copilot*).
 
-All agent persona, configuration, and security settings are version-controlled in the filesystem—not hidden away in opaque browser storage.
+All agent persona, configuration, and security settings are version-controlled in the filesystem.
 
 ### 1. Central Agent Manifest (`agent.config.json`)
 
@@ -73,7 +71,7 @@ The manifest at the project root defines the identity, model, and operational pa
 ```json
 {
   "name": "Looker Data Advisor",
-  "tagline": "AI Analytical Assistant for Explores, Visualizations, and KPIs",
+  "tagline": "AI Analytical Assistant for Explores, Visualizations",
   "model": "gemini-3.8-flash",
   "temperature": 0.4,
   "systemPromptFile": "agent.prompt.md",
@@ -171,7 +169,7 @@ You assist analysts with data interpretation, LookML exploration, and visualizat
 
 ---
 
-### 3. Creating Custom Enterprise Skills
+### 3. Creating Custom Skills
 
 To add a new tool or skill to your agent, add a TypeScript file in `server/src/agent/skills/` implementing the typed `ToolDefinition` interface:
 
@@ -329,7 +327,7 @@ agent-chat-app/
 
 | Decision | What We Chose | Why We Chose It | Alternative Considered & Why Rejected |
 | :--- | :--- | :--- | :--- |
-| **Streaming Protocol** | **Server-Sent Events (SSE)** | SSE works over standard HTTP/1.1 and HTTP/2, traverses enterprise firewalls effortlessly, supports native browser reconnections, and has zero compatibility issues inside sandboxed iframes. | **WebSockets**: Overkill for unidirectional LLM token streaming; requires dedicated socket servers and is frequently blocked by enterprise proxy gateways and Looker iframe sandboxes. |
+| **Streaming Protocol** | **Server-Sent Events (SSE)** | SSE works over standard HTTP/1.1 and HTTP/2, traverses firewalls effortlessly, supports native browser reconnections, and has zero compatibility issues inside sandboxed iframes. | **WebSockets**: Overkill for unidirectional LLM token streaming; requires dedicated socket servers and is frequently blocked by proxy gateways and Looker iframe sandboxes. |
 | **Encryption at Rest** | **AES-256-GCM** | Authenticated encryption ensures both confidentiality (cipher cannot be read) and integrity (auth tag detects tampering). Machine-local dev key eliminates complex vault setups during onboarding. | **Plain JSON on Disk**: Insecure; leaks user queries, proprietary analytics, and customer data in plain text. |
 | **Gemini Integration** | **`@google/genai` (Official SDK)** | The latest official Google GenAI SDK supports Gemini 3.x thought signatures, multi-modal inlineData, and native function calling. | **Legacy `@google/generative-ai`**: Lacks first-class thought signature preservation required for Gemini 3 function calling. |
 | **Dual Runtime Mode** | **`window.self === window.top` check** | Automatically detects whether the app is running in a browser tab (Standalone Dev mode) or embedded in an iframe (Looker Extension mode), swapping mock contexts cleanly. | **Hardcoded environment builds**: Requires maintaining separate codebases or separate deployment builds for local vs Looker. |
