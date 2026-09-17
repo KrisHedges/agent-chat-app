@@ -51,7 +51,7 @@
 
   /* Interactive Blue & Highlights */
   --accent-blue: var(--hmh-blue);               /* #144991 - primary button background & active controls */
-  --accent-blue-hover: var(--hmh-dark-blue);    /* #252F6B - dark blue button hover */
+  --accent-blue-hover: #0F3970;                 /* Deep true blue hover (darkened along exact hue, no purple/violet shift) */
   --accent-blue-subtle: rgba(0, 183, 227, 0.12);/* Tinted with HMH Lightest Blue */
 
   /* Accents & Status */
