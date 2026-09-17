@@ -1,7 +1,7 @@
 import React from 'react';
 import { ConversationSummary } from '../types/index.js';
 import { useLookerHost } from '../looker/StandaloneProvider.js';
-import { MessageSquare, Trash2, Menu, UserCheck, Shield } from 'lucide-react';
+import { MessageSquare, Trash2, Menu, Shield } from 'lucide-react';
 import styles from './ConversationSidebar.module.css';
 
 interface ConversationSidebarProps {
@@ -136,7 +136,7 @@ export const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
         )}
       </div>
 
-      {/* User Identity & Substitute User Switcher Footer */}
+      {/* User Identity Footer */}
       <div className={`${styles.sidebarFooter} sidebar-footer`}>
         <div className={`${styles.userProfileRow} user-profile-row`}>
           <div
@@ -156,29 +156,6 @@ export const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
           </div>
         </div>
 
-        {/* In Standalone Mode: Show Substitute User Switcher */}
-        {!isLooker && availableUsers.length > 1 && (
-          <div className={`${styles.substituteUserSelectBox} substitute-user-select-box`}>
-            <div className={`${styles.substituteLabel} substitute-label`}>
-              <UserCheck size={12} />
-              <span>Dev Substitute User:</span>
-            </div>
-            <select
-              className={`${styles.userSelectDropdown} form-select user-select-dropdown`}
-              value={user.id}
-              onChange={(e) => {
-                const target = availableUsers.find((u) => u.id === e.target.value);
-                if (target) switchUser(target);
-              }}
-            >
-              {availableUsers.map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.name} ({u.role})
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
 
         {isLooker && (
           <div className={`${styles.lookerBadgeFooter} looker-badge-footer`}>

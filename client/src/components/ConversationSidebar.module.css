@@ -299,36 +299,6 @@
   text-overflow: ellipsis;
 }
 
-.substituteUserSelectBox {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.substituteLabel {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-.userSelectDropdown {
-  padding: 5px 8px;
-  font-size: 12px;
-  width: 100%;
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  color: var(--text-primary);
-  outline: none;
-}
-
-.userSelectDropdown:focus {
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 0 2px var(--accent-blue-subtle);
-}
 
 .lookerBadgeFooter {
   display: flex;

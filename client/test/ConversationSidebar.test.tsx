@@ -163,7 +163,7 @@ describe('ConversationSidebar Component', () => {
     confirmSpy.mockRestore();
   });
 
-  it('switches dev substitute user when dropdown changes', () => {
+  it('renders user profile in sidebar footer without substitute dropdown', () => {
     render(
       <StandaloneProvider>
         <ConversationSidebar
@@ -179,9 +179,11 @@ describe('ConversationSidebar Component', () => {
       </StandaloneProvider>
     );
 
-    const select = screen.getByRole('combobox') as HTMLSelectElement;
-    fireEvent.change(select, { target: { value: 'dev_bob' } });
-    expect(screen.getByText('Bob Martinez')).toBeDefined();
+    expect(screen.getByText('Local Developer')).toBeDefined();
+    expect(screen.getByText('Developer')).toBeDefined();
+    expect(screen.getByText('dev@localhost')).toBeDefined();
+    expect(screen.getByTestId('user-avatar')).toBeDefined();
+    expect(screen.queryByRole('combobox')).toBeNull();
   });
 
   it('displays Looker Authenticated Session when in Looker mode', () => {
@@ -249,11 +251,6 @@ describe('ConversationSidebar Component', () => {
     const avatar = screen.getByTestId('user-avatar');
     expect(avatar.getAttribute('data-avatar-color')).toBe('#388bfd');
     expect(avatar.textContent).toBe(userWithoutColor.avatarInitials);
-
-    // Change to unknown user ID
-    const select = screen.getByRole('combobox') as HTMLSelectElement;
-    fireEvent.change(select, { target: { value: 'unknown_id' } });
-    expect(mockSwitch).not.toHaveBeenCalled();
   });
 });
 

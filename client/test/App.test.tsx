@@ -14,7 +14,7 @@ describe('App Component', () => {
   it('renders standalone provider and chat interface in window.top context', async () => {
     render(<App />);
     expect(await screen.findByTestId('chat-toolbar')).toBeDefined();
-    expect(await screen.findByText('Dev Substitute User:')).toBeDefined();
+    expect(await screen.findByText('Local Developer')).toBeDefined();
     expect(await screen.findByText('No saved conversations yet.')).toBeDefined();
   });
 

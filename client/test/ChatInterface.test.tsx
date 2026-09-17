@@ -44,7 +44,7 @@ describe('ChatInterface Component', () => {
     );
 
     expect(await screen.findByTestId('chat-toolbar')).toBeDefined();
-    expect(await screen.findByText('Dev Substitute User:')).toBeDefined();
+    expect(await screen.findByText('Local Developer')).toBeDefined();
 
     // Sidebar should be open initially
     expect(await screen.findByText('No saved conversations yet.')).toBeDefined();

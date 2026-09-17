@@ -49,7 +49,7 @@ Think of it as your personal analytical assistant:
 - **Zero-Configuration Key Generation**: Automatically creates a machine-local dev key in `server/data/.dev_key` on first run, or respects `process.env.ENCRYPTION_KEY` in production.
 - **Multi-User Isolation**: Data is separated by `userId`. User A cannot view or decrypt conversations belonging to User B.
 - **Categorized Drawer**: Past conversations are grouped chronologically (*Today*, *Yesterday*, *Previous 7 Days*, *Older*) with single-click thread loading and deletion confirmation.
-- **Dev Substitute User Switcher**: In standalone mode, switch between preset developer personas (`Alice Henderson`, `Bob Martinez`, `Carol Danvers`) to test multi-tenant permission boundaries and conversation isolation locally.
+- **User Identity Display**: Shows current user credentials and role in the sidebar footer (`Local Developer` in standalone mode, authenticated user in Looker environment).
 
 ### 4. Interactive Configuration & Resilient Execution
 - **Model Selector & Settings Drawer**: Select verified models on the fly (`gemini-3.8-flash`, `gemini-3.7-flash`, `gemini-3.1-pro`, `gemini-3.0-pro`, `gemini-2.5-flash`, `gemini-2.0-flash`) and customize system instructions per session.
@@ -134,7 +134,7 @@ agent-chat-app/
 │   │   ├── hooks/
 │   │   │   └── useAgentChat.ts      # Custom hook managing SSE stream, retry, and conversation state
 │   │   ├── looker/
-│   │   │   ├── StandaloneProvider.tsx# Mocks Looker context & dev substitute users
+│   │   │   ├── StandaloneProvider.tsx# Mocks Looker context & local developer identity
 │   │   │   ├── LookerBridge.tsx     # Adapter for future Looker Extension SDK integration
 │   │   │   └── user-model.ts        # User types and preset development personas
 │   │   ├── types/                   # Frontend shared types
