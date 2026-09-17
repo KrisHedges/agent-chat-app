@@ -1,68 +1,67 @@
 :root {
   /* ==========================================================================
-     HMH Brand Color Palette
-     Extracted directly from HMH brand guidelines:
-     - HMH Dark Blue: #252F6B (Use for large backgrounds)
-     - HMH Darkest Blue: #0F1938 (Use when high contrast is needed)
-     - HMH Lightest Blue: #00B7E3 (Brand secondary)
-     - HMH Green: #5DD146 (Accent)
-     - HMH Blue: #144991 (Interactive support)
-     - HMH Light Blue: #007ABD (Illustrations / support)
+     Brand & UI Color Palette
+     - Primary Navy: #252F6B (Use for large backgrounds)
+     - Midnight Blue: #0F1938 (High contrast headings & text)
+     - Cyan Accent: #00B7E3 (Brand secondary)
+     - Emerald Green: #5DD146 (Accent)
+     - Royal Blue: #144991 (Interactive support)
+     - Slate Blue: #007ABD (Illustrations / support)
      - Alabaster: #FFFFFF (UI light surface)
      - Gallery: #EDEDED (UI secondary surface)
      - Iron: #CACBCC (UI borders)
      - Manatee: #959699 (UI muted text / subtle)
-     - Trout: #4D4E53 (UI body text)
+     - Charcoal: #4D4E53 (UI body text)
      ========================================================================== */
 
-  /* Core Brand Colors */
-  --hmh-dark-blue: #252F6B;
-  --hmh-darkest-blue: #0F1938;
-  --hmh-lightest-blue: #00B7E3;
-  --hmh-green: #5DD146;
-  --hmh-blue: #144991;
-  --hmh-light-blue: #007ABD;
+  /* Core Colors */
+  --color-primary-navy: #252F6B;
+  --color-midnight-blue: #0F1938;
+  --color-cyan-accent: #00B7E3;
+  --color-emerald-green: #5DD146;
+  --color-royal-blue: #144991;
+  --color-slate-blue: #007ABD;
 
   /* UI Neutral Palette */
-  --hmh-alabaster: #FFFFFF;
-  --hmh-gallery: #EDEDED;
-  --hmh-iron: #CACBCC;
-  --hmh-manatee: #959699;
-  --hmh-trout: #4D4E53;
+  --color-alabaster: #FFFFFF;
+  --color-gallery: #EDEDED;
+  --color-iron: #CACBCC;
+  --color-manatee: #959699;
+  --color-charcoal: #4D4E53;
 
   /* ==========================================================================
      Semantic Theme Variables (Accessible Light Theme)
      ========================================================================== */
 
   /* Background Surfaces */
-  --bg-primary: var(--hmh-alabaster);           /* #FFFFFF - main canvas, message bubbles, inputs */
+  --bg-primary: var(--color-alabaster);         /* #FFFFFF - main canvas, message bubbles, inputs */
   --bg-secondary: #F8F9FA;                      /* #F8F9FA - subtle surface for sidebar & containers */
-  --bg-tertiary: var(--hmh-gallery);            /* #EDEDED - cards, pills, sidebar footer */
+  --bg-tertiary: var(--color-gallery);          /* #EDEDED - cards, pills, sidebar footer */
   --bg-hover: #E6E8EB;                          /* Interactive hover states */
 
   /* Borders & Dividers */
-  --border-color: var(--hmh-iron);              /* #CACBCC - structural card & container borders */
+  --border-color: var(--color-iron);            /* #CACBCC - structural card & container borders */
   --border-subtle: #E2E4E6;                     /* Hairline dividers */
 
   /* Typography */
-  --text-primary: var(--hmh-darkest-blue);       /* #0F1938 - high contrast headings & primary text (16.6:1 WCAG AAA) */
-  --text-secondary: var(--hmh-trout);           /* #4D4E53 - readable body copy & labels (8.2:1 WCAG AAA) */
+  --text-primary: var(--color-midnight-blue);   /* #0F1938 - high contrast headings & primary text (16.6:1 WCAG AAA) */
+  --text-secondary: var(--color-charcoal);      /* #4D4E53 - readable body copy & labels (8.2:1 WCAG AAA) */
   --text-muted: #6E7278;                        /* Accessible muted text (5.0:1 WCAG AA) */
 
   /* Interactive Blue & Highlights */
-  --accent-blue: var(--hmh-blue);               /* #144991 - primary button background & active controls */
+  --accent-blue: var(--color-royal-blue);       /* #144991 - primary button background & active controls */
   --accent-blue-hover: #0F3970;                 /* Deep true blue hover (darkened along exact hue, no purple/violet shift) */
-  --accent-blue-subtle: rgba(0, 183, 227, 0.12);/* Tinted with HMH Lightest Blue */
+  --accent-blue-subtle: rgba(0, 183, 227, 0.12);/* Tinted with Cyan Accent */
 
   /* Accents & Status */
   --accent-green: #1B7A18;                      /* Accessible high-contrast green for text/badges */
-  --accent-green-bright: var(--hmh-green);      /* #5DD146 - signature HMH green accent */
+  --accent-green-bright: var(--color-emerald-green); /* #5DD146 - signature green accent */
   --accent-green-subtle: rgba(93, 209, 70, 0.18);
 
   --accent-amber: #B7791F;                      /* Amber warning / dev indicator */
   --accent-amber-subtle: rgba(183, 121, 31, 0.14);
 
-  --accent-purple: var(--hmh-dark-blue);        /* Skills badge color */
+  --accent-purple: var(--color-primary-navy);   /* Skills badge color */
   --accent-purple-subtle: rgba(37, 47, 107, 0.10);
 
   --accent-red: #C81E1E;                        /* Error notifications & destructive hover */

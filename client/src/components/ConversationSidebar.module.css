@@ -174,7 +174,7 @@
 .sidebarItem.active,
 .sidebarItemActive {
   background: var(--accent-blue-subtle);
-  color: var(--hmh-darkest-blue);
+  color: var(--text-primary);
   border-left: 3px solid var(--accent-blue);
   font-weight: 600;
 }
