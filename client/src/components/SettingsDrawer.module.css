@@ -9,6 +9,7 @@
   display: flex;
   justify-content: flex-end;
   backdrop-filter: blur(2px);
+  animation: overlayFadeIn var(--transition-speed-medium, 300ms) var(--transition-ease-default, cubic-bezier(0.4, 0, 0.2, 1)) forwards;
 }
 
 .drawerPanel {
@@ -22,6 +23,26 @@
   gap: 20px;
   box-shadow: var(--shadow-lg);
   color: var(--text-primary);
+  will-change: transform;
+  animation: drawerSlideIn var(--transition-speed-medium, 300ms) var(--transition-ease-default, cubic-bezier(0.4, 0, 0.2, 1)) forwards;
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes drawerSlideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 .drawerHeader {
