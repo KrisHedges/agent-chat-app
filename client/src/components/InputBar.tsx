@@ -40,6 +40,18 @@ export const InputBar: React.FC<InputBarProps> = ({
     },
   });
 
+  const [showListeningTooltip, setShowListeningTooltip] = useState(false);
+
+  useEffect(() => {
+    if (isListening) {
+      setShowListeningTooltip(true);
+      const timer = setTimeout(() => setShowListeningTooltip(false), 2500);
+      return () => clearTimeout(timer);
+    } else {
+      setShowListeningTooltip(false);
+    }
+  }, [isListening]);
+
   // Auto resize textarea height
   useEffect(() => {
     if (textareaRef.current) {
@@ -113,30 +125,37 @@ export const InputBar: React.FC<InputBarProps> = ({
           disabled={isLoading}
         />
 
-        <button
-          type="button"
-          data-testid="mic-button"
-          data-listening={isListening}
-          className={`${styles.micBtn} ${isListening ? styles.micBtnActive : ''} btn`}
-          onClick={handleMicClick}
-          disabled={isLoading}
-          title={
-            !isSpeechSupported
-              ? 'Speech recognition is not supported in this browser'
-              : isListening
-              ? 'Listening... Click to stop voice input'
-              : 'Voice input (Speech to text)'
-          }
-          aria-label={
-            !isSpeechSupported
-              ? 'Speech recognition not supported'
-              : isListening
-              ? 'Stop voice input'
-              : 'Start voice input'
-          }
-        >
-          {isListening ? <MicOff size={16} /> : <Mic size={16} />}
-        </button>
+        <div className={styles.micWrapper}>
+          {showListeningTooltip && (
+            <div className={styles.micTooltip} role="status">
+              Listening...
+            </div>
+          )}
+          <button
+            type="button"
+            data-testid="mic-button"
+            data-listening={isListening}
+            className={`${styles.micBtn} ${isListening ? styles.micBtnActive : ''} btn`}
+            onClick={handleMicClick}
+            disabled={isLoading}
+            title={
+              !isSpeechSupported
+                ? 'Speech recognition is not supported in this browser'
+                : isListening
+                ? 'Listening... Click to stop voice input'
+                : 'Voice input (Speech to text)'
+            }
+            aria-label={
+              !isSpeechSupported
+                ? 'Speech recognition not supported'
+                : isListening
+                ? 'Stop voice input'
+                : 'Start voice input'
+            }
+          >
+            {isListening ? <MicOff size={16} /> : <Mic size={16} />}
+          </button>
+        </div>
 
         <button
           type="button"
@@ -149,25 +168,16 @@ export const InputBar: React.FC<InputBarProps> = ({
         </button>
       </div>
 
-      {/* Real-time Speech / Error Status Indicator (loading spinner and text moved to message bubble) */}
-      {(speechError || isListening || (statusMessage && statusMessage.toLowerCase().includes('error'))) && (
+      {/* Floating Error Toast positioned above input bar so prompt container height remains constant */}
+      {(speechError || (statusMessage && statusMessage.toLowerCase().includes('error'))) && (
         <div
           data-testid="input-status-bar"
-          className={`${styles.statusBar} ${
-            statusMessage?.toLowerCase().includes('error') || speechError
-              ? `${styles.statusBarError} error`
-              : ''
-          } status-bar`}
+          className={`${styles.floatingErrorToast} status-bar error`}
+          role="alert"
         >
-          {statusMessage?.toLowerCase().includes('error') || speechError ? (
-            <AlertCircle size={12} style={{ color: 'var(--accent-red, #C81E1E)' }} />
-          ) : (
-            <Mic size={12} className="pulse" />
-          )}
+          <AlertCircle size={13} style={{ flexShrink: 0 }} />
           <span>
-            {statusMessage?.toLowerCase().includes('error')
-              ? statusMessage
-              : speechError || 'Listening... Speak into your microphone'}
+            {statusMessage?.toLowerCase().includes('error') ? statusMessage : speechError}
           </span>
         </div>
       )}
